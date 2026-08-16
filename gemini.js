@@ -1,7 +1,7 @@
 const Groq = require("groq-sdk");
 
 const groq = new Groq({
-  apiKey: "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"
+  apiKey: process.env.GROQ_API_KEY || "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"
 });
 
 async function getAnswer(question) {

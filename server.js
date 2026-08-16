@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuration
-const MONGO_URI = 'mongodb://127.0.0.1:27017/edubridge';
-const JWT_SECRET = 'EDUBRIDGE_SECURE_TOKEN_SYSTEM_2026';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/edubridge';
+const JWT_SECRET = process.env.JWT_SECRET || 'EDUBRIDGE_SECURE_TOKEN_SYSTEM_2026';
 
 // Database Connectivity
 mongoose.connect(MONGO_URI)
@@ -100,7 +100,7 @@ app.get('/api/scores/:email', async (req, res) => {
 
 // Base Route Fallback redirects users straight to loading splash
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'Web.html'));
+  res.sendFile(path.join(__dirname, 'public', 'web.html'));
 });
 
 app.post("/api/doubt", async (req, res) => {
@@ -126,5 +126,5 @@ app.post("/api/doubt", async (req, res) => {
         answer: "Something went wrong. Please try again."
     });
 }});
-const PORT = 5000;
-app.listen(PORT, () => console.log(`EDUBRIDGE Server initialized on http://localhost:${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`EDUBRIDGE Server initialized on port ${PORT}`));
