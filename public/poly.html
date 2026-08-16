@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Polytechnic Course Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 20px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .subject-box {
+      background: #ffffff;
+      border: 2px solid #001F5C; /* Deep blue border */
+      border-radius: 10px;
+      width: 300px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .subject-box:hover {
+      transform: scale(1.05);
+    }
+    .subject-box h2 {
+      color: #001F5C; /* Deep blue heading */
+      text-align: center;
+    }
+    .btn {
+      background: #001F5C; /* Deep blue button */
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+    }
+    .btn:hover {
+      background: #000d2e; /* Even darker blue hover */
+    }
+    .hidden {
+      display: none;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="text-align:center; color:#001F5C;">Polytechnic Subjects</h1>
+  <div class="container">
+
+    <!-- Mathematics -->
+    <div class="subject-box">
+      <h2>Mathematics</h2>
+      <button class="btn" onclick="showDetails('poly_math')">Course Details</button>
+      <div id="poly_math" class="hidden">
+        <h3>Lecture Videos</h3>
+        <ul>
+          <li><a href="https://youtu.be/grnP3mduZkM?si=EOvDFAdUbPLhX1h0">Algebra Lecture</a></li>
+          <li><a href="https://youtu.be/PUB0TaZ7bhA?si=RCdQHhdyKCaXjQv7">Trigonometry Lecture</a></li>
+          <li><a href="https://youtu.be/XZo4xyJXCak?si=H4A0bsEryASzMH68">Statistics Lecture</a></li>
+        </ul>
+        <h3>Mock Test (20 Questions)</h3>
+        <button onclick="window.location.href='quizzpoly.html?subject=mathematics'" class="mock-btn">Mock Test</button>
+      </div>
+    </div>
+
+    <!-- Physics -->
+    <div class="subject-box">
+      <h2>Physics</h2>
+      <button class="btn" onclick="showDetails('poly_physics')">Course Details</button>
+      <div id="poly_physics" class="hidden">
+        <h3>Lecture Videos</h3>
+        <ul>
+          <li><a href="https://youtu.be/b1t41Q3xRM8?si=3mO1t-ldD1Z0tx_x">Mechanics Lecture</a></li>
+          <li><a href="https://youtu.be/NyOYW07-L5g?si=p6QPM0JCKxtda0n6">Thermodynamics Lecture</a></li>
+          <li><a href="https://youtu.be/uXr4lXYjXuU?si=6Fu52Ktq9jnfZmgE">Electronics Lecture</a></li>
+        </ul>
+        <h3>Mock Test (20 Questions)</h3>
+      <button onclick="window.location.href='quizzpoly.html?subject=physics'" class="mock-btn">Mock Test</button>  
+      </div>
+    </div>
+
+    <!-- Computer -->
+    <div class="subject-box">
+      <h2>Computer</h2>
+      <button class="btn" onclick="showDetails('poly_computer')">Course Details</button>
+      <div id="poly_computer" class="hidden">
+        <h3>Lecture Videos</h3>
+        <ul>
+          <li><a href="https://youtu.be/zOjov-2OZ0E?si=v_FTNF-zqpg24BY3">Programming Basics</a></li>
+          <li><a href="https://youtu.be/6Iu45VZGQDk?si=e8bJXEYF7_t_-STA">Database Concepts</a></li>
+          <li><a href="https://youtu.be/bj-Yfakjllc?si=VP6jzWSOn4axKdZY">Networking Fundamentals</a></li>
+        </ul>
+        <h3>Mock Test (20 Questions)</h3>
+        <button onclick="window.location.href='quizzpoly.html?subject=computer'" class="mock-btn">Mock Test</button>
+      </div>
+    </div>
+
+    <!-- English & Communication Skills -->
+    <div class="subject-box">
+      <h2>English & Communication</h2>
+      <button class="btn" onclick="showDetails('poly_english')">Course Details</button>
+      <div id="poly_english" class="hidden">
+        <h3>Lecture Videos</h3>
+        <ul>
+          <li><a href="https://youtu.be/QXVzmzhxWWc?si=wk0VzUhj8vVXzoGH">Grammar Lecture</a></li>
+          <li><a href="https://youtu.be/0IFDuhdB2Hk?si=XXLuL700_ba5H4uE">Writing Skills Lecture</a></li>
+          <li><a href="https://youtu.be/IY5KUKe1rKs?si=9RDnsJT-miUgkoE8">Presentation Skills Lecture</a></li>
+        </ul>
+        <h3>Mock Test (20 Questions)</h3>
+        <button onclick="window.location.href='quizzpoly.html?subject=english'" class="mock-btn">Mock Test</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function showDetails(subjectId) {
+      document.getElementById(subjectId).classList.toggle("hidden");
+    }
+
+    function startMock(subject) {
+      alert("Starting " + subject + " mock test with 230 questions!");
+      // Later: load questions dynamically from a JSON file or database
+      // Example: window.location.href = subject + "_mocktest.html";
+    }
+  </script>
+
+</body>
+</html>

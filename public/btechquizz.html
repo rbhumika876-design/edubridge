@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUBRIDGE - B.Tech Mock Examination</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; background-color: #f4f7f6; margin: 0; }
+        .quiz-container { max-width: 650px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0,0,0,0.08); }
+        h2 { color: #001F5C; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .progress { color: #666; font-size: 14px; margin-bottom: 20px; font-weight: bold; }
+        .question-card h3 { color: #333; margin-bottom: 25px; line-height: 1.4; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .options-btn { width: 100%; padding: 14px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 16px; text-align: left; transition: all 0.2s ease; }
+        .options-btn:hover { background: #001F5C; color: white; border-color: #001F5C; }
+        .score-screen { text-align: center; padding: 20px; }
+        .score-num { font-size: 48px; color: #008080; font-weight: bold; margin: 20px 0; }
+        .home-btn { display: inline-block; padding: 12px 24px; background: #001F5C; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="subject-title">Loading Examination...</h2>
+    <div id="progress-indicator" class="progress">Question 0 of 0</div>
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+
+    <div id="quiz-box">
+        <div class="question-card">
+            <h3 id="question-text">Loading question data...</h3>
+            <div id="options-box" class="options-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionBank = {
+        engineering: [
+            // --- Engineering Mechanics ---
+            { q: "According to Lami's Theorem, three concurrent coplanar forces in equilibrium are proportional to the sine of the angle between:", options: ["The other two forces", "The force vector and horizontal axis", "The resultant vector", "The normal reaction line"], answer: "The other two forces" },
+            { q: "What is the moment of inertia of a circular cross-section of diameter 'd' about its centroidal axis?", options: ["πd⁴ / 32", "πd⁴ / 64", "πd³ / 32", "πd⁴ / 12"], answer: "πd⁴ / 64" },
+            { q: "The product of mass and the square of the radius of gyration is known as:", options: ["Mass Moment of Inertia", "Section Modulus", "Polar Moment of Inertia", "Centroidal Force"], answer: "Mass Moment of Inertia" },
+            { q: "A perfect frame structure contains 'm' members and 'j' joints. What equation satisfies this layout?", options: ["m = 2j - 3", "m = 3j - 2", "m = 2j - 5", "m = j - 3"], answer: "m = 2j - 3" },
+            { q: "What is the work done by a force when its direction is perpendicular to the displacement vector?", options: ["Maximum positive work", "Maximum negative work", "Zero work", "Infinite work"], answer: "Zero work" },
+            { q: "The dynamic friction force coefficient compared to the static friction force coefficient is always:", options: ["Higher", "Lower", "Equal", "Zero"], answer: "Lower" },
+            { q: "A point in a body where the entire weight of the body is assumed to be concentrated is called:", options: ["Centroid", "Center of Mass", "Center of Gravity", "Metacenter"], answer: "Center of Gravity" },
+            { q: "What type of support provides reaction force vectors along both horizontal and vertical axes plus a bending moment?", options: ["Roller support", "Hinged support", "Fixed support", "Guided slider support"], answer: "Fixed support" },
+            { q: "The rate of change of angular momentum is directly proportional to the applied:", options: ["Force", "Torque", "Impulse", "Kinetic Energy"], answer: "Torque" },
+            { q: "Varignon's theorem states that the algebraic sum of moments of a system of coplanar forces about any point is equal to:", options: ["Zero", "The moment of their resultant about that point", "The product of all forces", "The total mass times displacement"], answer: "The moment of their resultant about that point" },
+            { q: "What is the velocity ratio of a third-system pulley layout containing 'n' distinct pulleys?", options: ["2^n", "2^n - 1", "2n", "n²"], answer: "2^n - 1" },
+            // --- Engineering Materials ---
+            { q: "Which mechanical material property describes resistance against localized plastic surface deformation or scratching?", options: ["Toughness", "Ductility", "Hardness", "Malleability"], answer: "Hardness" },
+            { q: "What crystalline space lattice structure layout does pure copper exhibit at room temperature?", options: ["BCC", "FCC", "HCP", "Simple Cubic"], answer: "FCC" },
+            { q: "The ability of a material to absorb energy and deform plastically before fracturing is termed:", options: ["Resilience", "Toughness", "Elasticity", "Brittleness"], answer: "Toughness" },
+            { q: "What structural composite phase represents a solid solution of carbon dissolved inside alpha-iron?", options: ["Austenite", "Ferrite", "Cementite", "Martensite"], answer: "Ferrite" },
+            { q: "The slow and progressive plastic deformation of a material under constant stress at high temperatures is called:", options: ["Fatigue", "Creep", "Yielding", "Resilience"], answer: "Creep" },
+            { q: "Which alloying element is primarily responsible for preventing oxidation and providing corrosion resistance in Stainless Steel?", options: ["Carbon", "Nickel", "Chromium", "Manganese"], answer: "Chromium" },
+            { q: "What type of solid fracture occurs with minimal plastic deformation and is characterized by rapid crack propagation?", options: ["Ductile Fracture", "Brittle Fracture", "Fatigue Fracture", "Creep Rupture"], answer: "Brittle Fracture" },
+            { q: "Hooke's Law is valid mathematically up to which specific boundary zone on a stress-strain graph?", options: ["Proportional Limit", "Elastic Limit", "Ultimate Tensile Point", "Fracture Point"], answer: "Proportional Limit" },
+            { q: "What crystal defect type classification characterizes a missing row of atoms inside an internal lattice plane?", options: ["Vacancy Point Defect", "Edge Dislocation Line Defect", "Grain Boundary Surface Defect", "Interstitial Defect"], answer: "Edge Dislocation Line Defect" },
+            { q: "The heat treatment process used to relieve internal stresses and completely soften hardened steel structures is:", options: ["Quenching", "Normalizing", "Annealing", "Tempering"], answer: "Annealing" },
+            { q: "What phase transformation reaction turns one liquid phase into two distinct solid phases simultaneously upon cooling?", options: ["Eutectic Reaction", "Eutectoid Reaction", "Peritectic Reaction", "Peritectoid Reaction"], answer: "Eutectic Reaction" },
+            // --- Workshop Practice ---
+            { q: "Which workshop tool is utilized to mark the precise center point location prior to drilling a hole in metal sheets?", options: ["Scriber", "Center Punch", "Prick Punch", "Chisel"], answer: "Center Punch" },
+            { q: "What specific parameter defines cutting speed calculations on a mechanical lathe device?", options: ["πDN / 60", "πDN / 1000", "2πN / 60", "RPM × Feed Rate"], answer: "πDN / 1000" },
+            { q: "A pattern used in sand-molding casting foundries is scaled slightly larger than the target product to compensate for:", options: ["Draft taper limits", "Metal shrinkage during cooling", "Machining finish allowances", "Sand erosion factors"], answer: "Metal shrinkage during cooling" },
+            { q: "What internal defect occurs in arc-welding lines when gas bubbles become trapped within the solidifying weld pool?", options: ["Porosity", "Slag Inclusion", "Spatter", "Undercut"], answer: "Porosity" },
+            { q: "Which pattern allowance is added to facilitate easy removal of a pattern from a sand mold without damaging the mold walls?", options: ["Shrinkage Allowance", "Draft or Taper Allowance", "Machining Allowance", "Distortion Allowance"], answer: "Draft or Taper Allowance" },
+            { q: "What fuel gas mixture is used alongside pure oxygen inside standard gas-welding torches?", options: ["Methane", "Acetylene", "Propane", "Hydrogen"], answer: "Acetylene" },
+            { q: "The process of permanently joining two metal pieces by heating a filler metal with a melting point above 450°C but below the base metal is:", options: ["Soldering", "Brazing", "Arc Welding", "Forging"], answer: "Brazing" },
+            { q: "Which file type layout profile is most effective for filing internal structural radii or concave curved profiles?", options: ["Flat File", "Half-Round File", "Square File", "Triangular File"], answer: "Half-Round File" },
+            { q: "The operation of finishing and sizing an existing drilled hole to precise dimensions using a multi-edged cutting tool is:", options: ["Boring", "Counterboring", "Countersinking", "Reaming"], answer: "Reaming" },
+            { q: "Which part of a lathe machine holds, guides, and feeds the cutting tool during machining operations?", options: ["Headstock", "Tailstock", "Carriage", "Lead Screw"], answer: "Carriage" },
+            { q: "What color code indicates an oxidizing flame structure configuration in oxy-acetylene torch operations?", options: ["Black", "Blue", "Red", "Green"], answer: "Blue" }
+        ],
+        mathematics: [
+            // --- Calculus ---
+            { q: "What is the limit of sin(x)/x as x approaches 0?", options: ["0", "1", "Does not exist", "Infinity"], answer: "1" },
+            { q: "Evaluate the derivative of f(x) = ln(sec(x)):", options: ["sec(x)", "tan(x)", "sec(x)tan(x)", "1/sec(x)"], answer: "tan(x)" },
+            { q: "What is the derivative of a^x with respect to x?", options: ["x · a^(x-1)", "a^x", "a^x · ln(a)", "a^x / ln(a)"], answer: "a^x · ln(a)" },
+            { q: "According to Rolle's Theorem, if f(a) = f(b) for a continuous differentiable function on [a,b], then there exists a point 'c' where f'(c) equals:", options: ["1", "-1", "0", "f(b)-f(a)"], answer: "0" },
+            { q: "Evaluate the definite integral: ∫ (from 0 to 1) e^x dx:", options: ["e", "e - 1", "e + 1", "1"], answer: "e - 1" },
+            { q: "What is the formula for the radius of curvature (ρ) of a curve y = f(x)?", options: ["[1 + (y')²]^(3/2) / |y''|", "[1 + y'']^(3/2) / y'", "(y')² / y''", "[1 - (y')²]^(1/2) / y''"], answer: "[1 + (y')²]^(3/2) / |y''|" },
+            { q: "The Taylor series expansion of f(x) around x = 0 is specifically referred to as the:", options: ["Fourier Series", "Maclaurin Series", "Laurent Series", "Binomial Expansion"], answer: "Maclaurin Series" },
+            { q: "Evaluate the integral: ∫ x · sin(x) dx:", options: ["-x·cos(x) + sin(x) + C", "x·cos(x) - sin(x) + C", "x·sin(x) + cos(x) + C", "-x·sin(x) - cos(x) + C"], answer: "-x·cos(x) + sin(x) + C" },
+            { q: "What is the value of the improper integral ∫ (from 0 to ∞) e^(-x) dx?", options: ["0", "1", "Infinity", "-1"], answer: "1" },
+            { q: "If u = f(x, y) is a homogeneous function of degree 'n', Euler's Theorem states that x(∂u/∂x) + y(∂u/∂y) equals:", options: ["u", "nu", "n(n-1)u", "0"], answer: "nu" },
+            { q: "What tracking tool evaluates limits resulting in 0/0 or ∞/∞ indeterminate formats?", options: ["Taylor's Rule", "L'Hôpital's Rule", "Leibniz's Rule", "Simpson's Rule"], answer: "L'Hôpital's Rule" },
+            // --- Differential Equations ---
+            { q: "What is the order of the differential equation: (d²y/dx²)³ + (dy/dx)⁴ + y = 0?", options: ["2", "3", "4", "1"], answer: "2" },
+            { q: "What is the integrating factor (IF) for the linear differential equation dy/dx + P(x)y = Q(x)?", options: ["∫ P(x) dx", "e^(∫ P(x) dx)", "e^(∫ Q(x) dx)", "∫ Q(x) dx"], answer: "e^(∫ P(x) dx)" },
+            { q: "The general solution of the differential equation d²y/dx² + 4y = 0 is:", options: ["y = C1·e^(2x) + C2·e^(-2x)", "y = C1·cos(2x) + C2·sin(2x)", "y = (C1 + C2·x)e^(2x)", "y = C1·cos(4x) + C2·sin(4x)"], answer: "y = C1·cos(2x) + C2·sin(2x)" },
+            { q: "A differential equation M(x,y)dx + N(x,y)dy = 0 is exact if and only if:", options: ["∂M/∂x = ∂N/∂y", "∂M/∂y = ∂N/∂x", "∂²M/∂y² = ∂²N/∂x²", "M = N"], answer: "∂M/∂y = ∂N/∂x" },
+            { q: "What is the Particular Integral (PI) of the differential equation (D² - 1)y = e^(2x)?", options: ["e^(2x) / 3", "e^(2x) / 5", "e^(2x) / 4", "e^(2x)"], answer: "e^(2x) / 3" },
+            { q: "Which method uses a numerical step size 'h' to iteratively approximate solutions to first-order differential equations?", options: ["Euler's Method", "Runge-Kutta 4th Order Method", "Both A and B", "None of the above"], answer: "Both A and B" },
+            { q: "The Laplace Transform of the function f(t) = t is given by:", options: ["1/s", "1/s²", "2/s³", "1/(s-1)"], answer: "1/s²" },
+            { q: "What is the Laplace transform of e^(at)?", options: ["1/s", "1/(s-a)", "1/(s+a)", "a/s"], answer: "1/(s-a)" },
+            { q: "The orthogonal trajectories of a family of straight lines passing through the origin (y = mx) form a family of:", options: ["Parabolas", "Concentric Circles", "Hyperbolas", "Ellipses"], answer: "Concentric Circles" },
+            { q: "What is the complete solution structure of a non-homogeneous linear differential equation?", options: ["Complementary Function only", "Particular Integral only", "Complementary Function + Particular Integral", "Product of CF and PI"], answer: "Complementary Function + Particular Integral" },
+            { q: "What is the Laplace Transform of sin(at)?", options: ["s / (s² + a²)", "a / (s² + a²)", "a / (s² - a²)", "s / (s² - a²)"], answer: "a / (s² + a²)" },
+            // --- Linear Algebra ---
+            { q: "If A is a square matrix of order 'n', then the matrix equation A · X = λX tracking vector alignments defines λ as an:", options: ["Eigenvalue", "Eigenvector", "Identity factor", "Trace coefficient"], answer: "Eigenvalue" },
+            { q: "According to the Cayley-Hamilton Theorem, every square matrix satisfies its own:", options: ["Characteristic Equation", "Determinant Vector", "Transpose identity", "Adjoint limit"], answer: "Characteristic Equation" },
+            { q: "What is the rank of an identity matrix of order 3?", options: ["0", "1", "2", "3"], answer: "3" },
+            { q: "If the determinant of a matrix A equals exactly 0, the matrix is classified as:", options: ["Orthogonal", "Symmetric", "Singular", "Non-singular"], answer: "Singular" },
+            { q: "The sum of the principal diagonal elements of a square matrix is called its:", options: ["Determinant", "Trace", "Rank", "Eigenvalue Sum"], answer: "Trace" },
+            { q: "For any orthogonal matrix A, what identity constraint is always true?", options: ["Aᵀ = A", "A⁻¹ = Aᵀ", "A⁻¹ = A", "A · Aᵀ = 0"], answer: "A⁻¹ = Aᵀ" },
+            { q: "The system of homogeneous linear equations A · X = 0 possesses a non-trivial solution if:", options: ["det(A) ≠ 0", "det(A) = 0", "Rank(A) = number of unknowns", "A is an identity matrix"], answer: "det(A) = 0" },
+            { q: "What is the product of all the eigenvalues of a square matrix A equal to?", options: ["The trace of A", "The determinant of A", "The rank of A", "Zero"], answer: "The determinant of A" },
+            { q: "If A is a symmetric matrix, then its transpose Aᵀ equals:", options: ["-A", "A", "A⁻¹", "I"], answer: "A" },
+            { q: "The eigenvalues of a real symmetric matrix are always:", options: ["Purely imaginary", "Complex conjugates", "Real numbers", "Zero"], answer: "Real numbers" }
+        ],
+        computer: [
+            // --- Programming in C ---
+            { q: "What is the exact return size operator value bytes output for a standard 'double' data type in 64-bit C systems?", options: ["2", "4", "8", "16"], answer: "8" },
+            { q: "Which pointer declaration structure represents an uninitialized memory address tracking format pointing to nothing valid?", options: ["Dangling Pointer", "Wild Pointer", "Null Pointer", "Void Pointer"], answer: "Wild Pointer" },
+            { q: "What built-in standard library function allocation command clears memory blocks and initializes them to zero?", options: ["malloc()", "calloc()", "realloc()", "free()"], answer: "calloc()" },
+            { q: "What C storage class keyword sets a local variable to persist its saved context values across multiple function calls?", options: ["auto", "register", "static", "extern"], answer: "static" },
+            { q: "What C code operator accesses the direct variable hardware memory address string context?", options: ["*", "&", "->", "."], answer: "&" },
+            { q: "What C preprocessor directive code command defines constant macros prior to compilation execution blocks?", options: ["#include", "#define", "#ifdef", "#pragma"], answer: "#define" },
+            { q: "What structural keyword defines variables sharing one overlapping hardware memory tracking space layout?", options: ["struct", "union", "enum", "typedef"], answer: "union" },
+            { q: "What C library function reads a single formatted character from standard console inputs?", options: ["printf()", "getchar()", "gets()", "scanf()"], answer: "getchar()" },
+            { q: "A pointer that points to another pointer memory tracking address represents a configuration of:", options: ["Single Pointer", "Double Pointer (Pointer to Pointer)", "Array of Pointers", "Function Pointer"], answer: "Double Pointer (Pointer to Pointer)" },
+            { q: "What error occurs if a program recursively invokes a function infinitely without reaching a base case condition?", options: ["Segmentation Fault", "Stack Overflow", "Memory Leak", "Buffer Underflow"], answer: "Stack Overflow" },
+            { q: "What mode parameter opens a text file for appending data to its end inside the fopen() command?", options: ["'r'", "'w'", "'a'", "'r+'"], answer: "'a'" },
+            // --- Data Structures ---
+            { q: "What worst-case execution Time Complexity Big-O notation describes a standard Binary Search traversal array tree run?", options: ["O(1)", "O(n)", "O(log n)", "O(n log n)"], answer: "O(log n)" },
+            { q: "What structural abstract data type algorithm principle controls standard Queue insertion and deletion routines?", options: ["LIFO", "FIFO", "LILO", "Random Access"], answer: "FIFO" },
+            { q: "A binary tree tracking algorithm configuration where every individual node contains exactly zero or two child leaves is a:", options: ["Full Binary Tree", "Complete Binary Tree", "Perfect Binary Tree", "Balanced Tree"], answer: "Full Binary Tree" },
+            { q: "What is the balance factor calculation rule used to track AVL tree balanced structure configurations?", options: ["Height(Left) + Height(Right)", "Height(Left) - Height(Right)", "Height(Left) × Height(Right)", "Node Count / 2"], answer: "Height(Left) - Height(Right)" },
+            { q: "What tracking pointer reference path is saved inside the final rear end node of a standard Singly Linked List?", options: ["Head node address", "Previous node address", "NULL reference", "Random memory block"], answer: "NULL reference" },
+            { q: "Which sorting algorithm employs a divide-and-conquer strategy using a pivot element?", options: ["Bubble Sort", "Insertion Sort", "Quick Sort", "Selection Sort"], answer: "Quick Sort" },
+            { q: "What data structure handles function calls and tracks local variables during program runtime execution?", options: ["Queue", "Stack", "Heap", "Graph"], answer: "Stack" },
+            { q: "What non-linear data structure maps items using nodes interconnected via directional or non-directional edges?", options: ["Linked List", "Stack", "Graph", "Array"], answer: "Graph" },
+            { q: "The post-order traversal sequence tracking string configuration for a binary tree structure visits nodes in what order?", options: ["Root -> Left -> Right", "Left -> Root -> Right", "Left -> Right -> Root", "Root -> Right -> Left"], answer: "Left -> Right -> Root" },
+            { q: "What hash conflict management scheme saves collided entities within a linked array list extending from the target slot?", options: ["Linear Probing", "Quadratic Probing", "Chaining (Open Chaining)", "Double Hashing"], answer: "Chaining (Open Chaining)" },
+            { q: "What linear array index access efficiency property matches arbitrary element lookups?", options: ["O(1)", "O(n)", "O(log n)", "O(n²)"], answer: "O(1)" },
+            // --- Operating Systems Basics ---
+            { q: "What process state scheduling scenario causes an active CPU process thread to enter the blocked or waiting state queue?", options: ["Timer Interrupt execution", "I/O operation request trigger", "Process creation call", "Context Switch termination"], answer: "I/O operation request trigger" },
+            { q: "What core operating system architectural kernel structure is completely loaded inside memory spaces during boot tracking runs?", options: ["Shell Engine", "Monolithic Kernel", "Microkernel", "Kernel Space Core"], answer: "Kernel Space Core" },
+            { q: "What hardware system mapping table structure converts Virtual Memory addresses directly to Physical Frame coordinates?", options: ["Page Table", "Segment Registry Map", "Translation Lookaside Buffer", "Inverted Frame Index"], answer: "Page Table" },
+            { q: "What explicit deadlocking condition refers to resources that cannot be forcibly stripped from an active process thread?", options: ["Mutual Exclusion", "Hold and Wait", "No Preemption", "Circular Wait"], answer: "No Preemption" },
+            { q: "What caching or memory phenomenon occurs when a process spends more time handling page faults than executing instructions?", options: ["Fragmentation", "Segmentation", "Thrashing", "Paging swap down"], answer: "Thrashing" },
+            { q: "Which CPU scheduling algorithm is non-preemptive and executes tasks based strictly on their arrival order?", options: ["Round Robin", "Shortest Job First (SJF)", "First-Come, First-Served (FCFS)", "Priority Scheduling"], answer: "First-Come, First-Served (FCFS)" },
+            { q: "What inter-process communication variable structure acts as an atomic counter to synchronize concurrent resource access?", options: ["Mutex Lock", "Semaphore", "Pipe Channel", "Message Queue"], answer: "Semaphore" },
+            { q: "The component of the operating system responsible for selecting which process from the ready queue gets allocated to the CPU is the:", options: ["Dispatcher", "CPU Short-Term Scheduler", "Interrupt Handler", "Swapper"], answer: "CPU Short-Term Scheduler" },
+            { q: "What storage allocation issue describes scattered tiny free blocks across system memory that cannot accommodate a contiguous process block?", options: ["Internal Fragmentation", "External Fragmentation", "Virtual Page Leaking", "Deadlock Blockage"], answer: "External Fragmentation" },
+            { q: "What system command execution mechanism duplicates an existing parent process to spawn an identical concurrent child process?", options: ["exec() API call", "fork() system call", "spawn() initialization", "clone() routine"], answer: "fork() system call" }
+        ]
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const subject = urlParams.get('subject') || 'engineering';
+    
+    let currentQuestionIndex = 0;
+    let totalCorrectAnswers = 0;
+    let questionsList = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const cleanedSubject = subject.trim().toLowerCase();
+        document.getElementById('subject-title').innerText = `${cleanedSubject.toUpperCase()} Mock Exam`;
+        
+        questionsList = questionBank[cleanedSubject];
+
+        if (questionsList && questionsList.length > 0) {
+            loadQuestion();
+        } else {
+            document.getElementById('question-text').innerText = `No registered questions found for: "${cleanedSubject}"`;
+        }
+    });
+
+    function loadQuestion() {
+        const currentQuestion = questionsList[currentQuestionIndex];
+        document.getElementById('progress-indicator').innerText = `Question ${currentQuestionIndex + 1} of ${questionsList.length}`;
+        document.getElementById('question-text').innerText = currentQuestion.q;
+        
+        let optionsHtml = "";
+        currentQuestion.options.forEach(option => {
+            optionsHtml += `<button class="options-btn" onclick="processAnswerSubmit('${option.replace(/'/g, "\\'")}')">${option}</button>`;
+        });
+        document.getElementById('options-box').innerHTML = optionsHtml;
+    }
+
+    function processAnswerSubmit(selectedOption) {
+        if (selectedOption === questionsList[currentQuestionIndex].answer) {
+            totalCorrectAnswers++;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questionsList.length) {
+            loadQuestion();
+        } else {
+            renderFinalScorecard();
+        }
+    }
+function renderFinalScorecard() {
+
+    const accuracyPercentage = Math.round((totalCorrectAnswers / questionsList.length) * 100);
+
+    // ---------- Dashboard Update ----------
+
+    let tests = parseInt(localStorage.getItem("testsTaken")) || 0;
+    tests++;
+    localStorage.setItem("testsTaken", tests);
+
+    let videos = parseInt(localStorage.getItem("videosCompleted")) || 0;
+    videos++;
+    localStorage.setItem("videosCompleted", videos);
+
+    let totalScore = parseInt(localStorage.getItem("totalScore")) || 0;
+    totalScore += accuracyPercentage;
+    localStorage.setItem("totalScore", totalScore);
+
+    let average = Math.round(totalScore / tests);
+    localStorage.setItem("averageScore", average);
+
+    let progress = parseInt(localStorage.getItem("overallProgress")) || 40;
+    progress += 10;
+
+    if (progress > 100) {
+        progress = 100;
+    }
+
+    localStorage.setItem("overallProgress", progress);
+
+    // ---------- Result Screen ----------
+
+    document.getElementById('progress-indicator').style.display = 'none';
+
+    document.getElementById('quiz-box').innerHTML = `
+        <div class="score-screen">
+
+            <h3>🎉 Examination Complete!</h3>
+
+            <div class="score-num">
+                ${totalCorrectAnswers} / ${questionsList.length}
+            </div>
+
+            <p>Accuracy: <strong>${accuracyPercentage}%</strong></p>
+
+            <br>
+
+            <a href="dashboard.html" class="home-btn">
+                View Dashboard
+            </a>
+
+            <br><br>
+
+            <a href="higherstudies.html" class="home-btn">
+                Return to Courses
+            </a>
+
+        </div>
+    `;
+}
+
+ </script>
+</body>
+</html>

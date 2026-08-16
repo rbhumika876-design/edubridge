@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>engistart</title>
+ <style>
+  body { margin: 0; padding: 0; }
+  .background {
+   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+   background: url('https://t3.ftcdn.net/jpg/07/75/38/62/360_F_775386204_jU10LwacTIdlNWEcOuGtBlJ7dNzUJLxb.jpg');
+   background-size: cover; filter: blur(8px); z-index: -1;
+  }
+  .content {
+   position: relative; z-index: 1; color: white; text-align: center; padding-top: 200px; font-size: 2em;
+  }
+  .loading { font-size: 0.8em; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .spinner {
+   border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white;
+   border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+ </style>
+ <script>
+   setTimeout(function() {
+     window.location.href = "front.html";
+   }, 3000);
+ </script>
+</head>
+<body>
+ <div class="background"></div>
+ <div class="content">
+  <h1 align="center">EDUBRIDGE</h1>
+  <p align="center">Helping Intermediate Students Transition to Engineering Learning</p>
+  <div class="loading">
+    <div class="spinner"></div>
+    <span>Your page is loading...</span>
+  </div>
+ </div>
+</body>
+</html>

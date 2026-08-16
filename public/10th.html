@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>After 10th Bridge Courses</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #001F5C; /* Deep Dark Blue */
+      --light: #f4f4f4;
+      --dark: #34495e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background: var(--light); color: var(--dark); }
+    header {
+      background: var(--secondary);
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.2em;
+    }
+    section { padding: 60px 20px; max-width: 1100px; margin: auto; }
+    h2 { margin-bottom: 20px; color: var(--primary); }
+    .courses { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .course { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .course h3 { color: var(--secondary); }
+    .btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: var(--secondary); color: white; text-decoration: none; border-radius: 5px; transition: 0.3s; }
+    .btn:hover { background: #000033; }
+    .subjects { margin-top: 15px; }
+    .subjects ul { list-style: none; padding: 0; }
+    .subjects li { background: #ecf0f1; margin: 5px 0; padding: 8px; border-radius: 5px; }
+    footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>After 10th Bridge Courses</h1>
+  </header>
+
+  <!-- Courses Section -->
+  <section id="courses">
+    <h2>Courses</h2>
+    <div class="courses">
+      <div class="course">
+       <h3>intermediate courses</h3>
+        <p>Subjects Included:</p>
+        <div class="subjects">
+          <ul>
+            <li>Mathematics</li>
+            <li>Physics</li>
+            <li>Chemistry</li>
+            <li>Biology</li>
+            <li>English </li>
+          </ul>
+        </div>
+        <a href="intermediate.html" class="btn">Course Details</a>
+      </div>
+
+      <div class="course">
+        <h3>Polytechnic</h3>
+        <p>Subjects included:</p>
+        <div class="subjects">
+          <ul>
+            <li>Mathematics</li>
+            <li>Physics</li>
+            <li>introduction to programming</li>
+            <li>English & Communication Skills</li>
+          </ul>
+        </div>
+        <a href="poly.html" class="btn">Course Details</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 EDUBRIDGE. All rights reserved.</p>
+    <p>Contact us: info@edubridge.com</p>
+  </footer>
+
+</body>
+</html>

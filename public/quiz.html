@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUBRIDGE - Mock Examination</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; background-color: #f4f7f6; margin: 0; }
+        .quiz-container { max-width: 650px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0,0,0,0.08); }
+        h2 { color: #001F5C; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .progress { color: #666; font-size: 14px; margin-bottom: 20px; font-weight: bold; }
+        .question-card h3 { color: #333; margin-bottom: 25px; line-height: 1.4; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .options-btn { width: 100%; padding: 14px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 16px; text-align: left; transition: all 0.2s ease; }
+        .options-btn:hover { background: #001F5C; color: white; border-color: #001F5C; }
+        .score-screen { text-align: center; padding: 20px; }
+        .score-num { font-size: 48px; color: #008080; font-weight: bold; margin: 20px 0; }
+        .home-btn { display: inline-block; padding: 12px 24px; background: #001F5C; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="subject-title">Loading Examination...</h2>
+    <div id="progress-indicator" class="progress">Question 0 of 0</div>
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+
+    <div id="quiz-box">
+        <div class="question-card">
+            <h3 id="question-text">Loading question data...</h3>
+            <div id="options-box" class="options-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionBank = {
+        mathematics: [
+            // --- Algebra ---
+            { q: "Solve for x: 2x + 7 = 15", options: ["3", "4", "5", "6"], answer: "4" },
+            { q: "What is the value of discriminant for x² - 4x + 4 = 0?", options: ["0", "4", "-4", "16"], answer: "0" },
+            { q: "Find the 10th term of the AP: 2, 5, 8, 11...", options: ["27", "29", "31", "33"], answer: "29" },
+            { q: "If log(x) + log(2) = log(10), what is x?", options: ["2", "5", "8", "10"], answer: "5" },
+            { q: "What is the product of the roots of 3x² - 5x + 6 = 0?", options: ["2", "-2", "5/3", "-5/3"], answer: "2" },
+            { q: "Find the matrix determinant of [[2,3],[1,4]]:", options: ["5", "11", "6", "8"], answer: "5" },
+            { q: "If A and B are independent events, P(A)=0.5, P(B)=0.4, find P(A ∩ B):", options: ["0.9", "0.1", "0.2", "0.25"], answer: "0.2" },
+            // --- Trigonometry ---
+            { q: "What is the value of sin²(30°) + cos²(30°)?", options: ["0", "0.5", "1", "1.5"], answer: "1" },
+            { q: "Evaluate tan(45°) + cot(45°):", options: ["0", "1", "2", "Infinity"], answer: "2" },
+            { q: "Express sec²θ - tan²θ:", options: ["0", "1", "sin²θ", "cos²θ"], answer: "1" },
+            { q: "What is the value of sin(90° - θ)?", options: ["sinθ", "cosθ", "-sinθ", "-cosθ"], answer: "cosθ" },
+            { q: "Find the value of cos(60°):", options: ["1/2", "√3/2", "1/√2", "0"], answer: "1/2" },
+            { q: "What is the maximum value that sin(θ) can reach?", options: ["0", "0.5", "1", "Infinity"], answer: "1" },
+            { q: "Convert π/3 radians into degrees:", options: ["30°", "45°", "60°", "90°"], answer: "60°" },
+            // --- Statistics ---
+            { q: "Find the mean of data set: 4, 8, 12, 16", options: ["8", "10", "12", "14"], answer: "10" },
+            { q: "What is the median of the scores: 3, 5, 7, 9, 11?", options: ["5", "7", "9", "6"], answer: "7" },
+            { q: "Which statistical term represents the value appearing most frequently?", options: ["Mean", "Median", "Mode", "Variance"], answer: "Mode" },
+            { q: "If variance of a distribution is 49, what is standard deviation?", options: ["7", "-7", "49", "24.5"], answer: "7" },
+            { q: "The probability of a certain event occurring is:", options: ["-1", "0", "1", "0.5"], answer: "1" },
+            { q: "Find the range of numbers: 12, 5, 22, 14, 9", options: ["14", "17", "10", "22"], answer: "17" }
+        ],
+        physics: [
+            // --- Mechanics ---
+            { q: "What is the SI unit of force?", options: ["Joule", "Newton", "Watt", "Pascal"], answer: "Newton" },
+            { q: "What is the value of acceleration due to gravity (g) on Earth?", options: ["9.8 m/s²", "8.9 m/s²", "10.8 m/s²", "9.8 cm/s²"], answer: "9.8 m/s²" },
+            { q: "According to Newton's Second Law, Force equals mass multiplied by:", options: ["Velocity", "Acceleration", "Distance", "Time"], answer: "Acceleration" },
+            { q: "What kind of friction acts on objects that are not moving?", options: ["Static", "Kinetic", "Rolling", "Fluid"], answer: "Static" },
+            { q: "The area under a velocity-time graph represents:", options: ["Acceleration", "Force", "Displacement", "Work done"], answer: "Displacement" },
+            { q: "A scalar quantity possesses only:", options: ["Direction", "Magnitude", "Both", "None"], answer: "Magnitude" },
+            { q: "What is the work done when force and displacement are perpendicular?", options: ["Maximum", "Minimum", "Zero", "Negative"], answer: "Zero" },
+            // --- Thermodynamics ---
+            { q: "Which law of thermodynamics defines the concept of temperature?", options: ["Zeroth Law", "First Law", "Second Law", "Third Law"], answer: "Zeroth Law" },
+            { q: "An isothermal process takes place at a constant:", options: ["Pressure", "Volume", "Temperature", "Heat Content"], answer: "Temperature" },
+            { q: "What is the unit of specific heat capacity?", options: ["J/kg", "J/kg·K", "J/K", "Calories"], answer: "J/kg·K" },
+            { q: "In an adiabatic path compression, the heat transfer (Q) is:", options: ["Positive", "Negative", "Zero", "Constant"], answer: "Zero" },
+            { q: "Which device converts heat energy into mechanical work?", options: ["Refrigerator", "Heat Pump", "Heat Engine", "Generator"], answer: "Heat Engine" },
+            { q: "SI unit of thermodynamic absolute temperature scale is:", options: ["Celsius", "Fahrenheit", "Kelvin", "Rankine"], answer: "Kelvin" },
+            { q: "What is the efficiency of a perfect Carnot engine running at absolute zero?", options: ["0%", "50%", "100%", "Depends on fuel"], answer: "100%" },
+            // --- Electronics ---
+            { q: "Which component permits electric current to flow in only one direction?", options: ["Resistor", "Capacitor", "Diode", "Inductor"], answer: "Diode" },
+            { q: "What element is commonly used as the base semiconductor in computer chips?", options: ["Copper", "Silicon", "Rubber", "Iron"], answer: "Silicon" },
+            { q: "What is the unit of electrical resistance?", options: ["Volt", "Ampere", "Ohm", "Farad"], answer: "Ohm" },
+            { q: "A p-type semiconductor contains an excess of:", options: ["Electrons", "Holes", "Neutrons", "Protons"], answer: "Holes" },
+            { q: "Which device is used to amplify electrical signals?", options: ["Transformer", "Transistor", "Rectifier", "Resistor"], answer: "Transistor" },
+            { q: "In Ohm's Law, Current (I) is equal to:", options: ["V × R", "V / R", "R / V", "V + R"], answer: "V / R" }
+        ],
+        chemistry: [
+            // --- Organic Chemistry ---
+            { q: "What element forms the structural basis of all organic molecules?", options: ["Oxygen", "Hydrogen", "Carbon", "Nitrogen"], answer: "Carbon" },
+            { q: "What is the chemical formula for Methane gas?", options: ["CH4", "C2H6", "CH3OH", "CO2"], answer: "CH4" },
+            { q: "Hydrocarbons containing carbon-carbon double bonds are categorized as:", options: ["Alkanes", "Alkenes", "Alkynes", "Arenes"], answer: "Alkenes" },
+            { q: "What functional group characterizes an alcohol compound?", options: ["-CHO", "-COOH", "-OH", "-NH2"], answer: "-OH" },
+            { q: "What is the main compound found in common vinegar?", options: ["Formic Acid", "Acetic Acid", "Hydrochloric Acid", "Acetone"], answer: "Acetic Acid" },
+            { q: "What structural shape does a benzene ring have?", options: ["Pentagon", "Hexagon", "Octagon", "Triangle"], answer: "Hexagon" },
+            { q: "What is the common prefix for an organic chain containing 3 carbons?", options: ["Meth-", "Eth-", "Prop-", "But-"], answer: "Prop-" },
+            // --- Inorganic Chemistry ---
+            { q: "What is the most abundant gas found inside Earth's atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], answer: "Nitrogen" },
+            { q: "What type of chemical bond involves sharing pairs of electrons?", options: ["Ionic", "Covalent", "Metallic", "Hydrogen Bond"], answer: "Covalent" },
+            { q: "What is the chemical formula for table salt?", options: ["HCl", "NaOH", "NaCl", "NaHCO3"], answer: "NaCl" },
+            { q: "Elements belonging to Group 18 of the periodic table are called:", options: ["Halogens", "Alkali Metals", "Noble Gases", "Chalcogens"], answer: "Noble Gases" },
+            { q: "What is the oxidation state of Oxygen in water (H2O)?", options: ["0", "+1", "-2", "-1"], answer: "-2" },
+            { q: "Which element has the atomic number 1?", options: ["Helium", "Hydrogen", "Lithium", "Carbon"], answer: "Hydrogen" },
+            { q: "What gas turns lime water milky?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], answer: "Carbon Dioxide" },
+            // --- Physical Chemistry ---
+            { q: "What is the pH level of pure distilled water?", options: ["0", "5", "7", "14"], answer: "7" },
+            { q: "What subatomic particle carries a negative electric charge?", options: ["Proton", "Neutron", "Electron", "Positron"], answer: "Electron" },
+            { q: "According to Avogadro's number, how many units are in one mole?", options: ["6.022 × 10²³", "3.141 × 10¹⁰", "9.81 × 10⁵", "1.6 × 10⁻¹⁹"], answer: "6.022 × 10²³" },
+            { q: "An exothermic reaction always releases:", options: ["Mass", "Heat", "Electrons", "Protons"], answer: "Heat" },
+            { q: "What is the standard unit of pressure in physical sciences?", options: ["Joule", "Pascal", "Newton", "Kelvin"], answer: "Pascal" },
+            { q: "What happens to volume of a gas if pressure increases at constant temp?", options: ["Increases", "Decreases", "Stays Same", "Doubles"], answer: "Decreases" }
+        ],
+        biology: [
+            // --- Botany ---
+            { q: "Which cellular component gives plants their green coloration?", options: ["Mitochondria", "Chloroplast", "Vacuole", "Ribosome"], answer: "Chloroplast" },
+            { q: "What process do green plants use to create food from sunlight?", options: ["Respiration", "Photosynthesis", "Transpiration", "Fermentation"], answer: "Photosynthesis" },
+            { q: "What tissue inside vascular plants transfers water up from the roots?", options: ["Phloem", "Xylem", "Cortex", "Epidermis"], answer: "Xylem" },
+            { q: "What gas do plants absorb from the air to perform photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Argon"], answer: "Carbon Dioxide" },
+            { q: "What is the main carbohydrate storage molecule found inside plants?", options: ["Glycogen", "Glucose", "Starch", "Cellulose"], answer: "Starch" },
+            { q: "The reproductive organ of an angiosperm plant is the:", options: ["Leaf", "Stem", "Root", "Flower"], answer: "Flower" },
+            { q: "What plant hormone is primarily responsible for fruit ripening?", options: ["Auxin", "Gibberellin", "Ethylene", "Cytokinin"], answer: "Ethylene" },
+            // --- Zoology ---
+            { q: "What body organ is responsible for pumping blood throughout mammals?", options: ["Lung", "Liver", "Brain", "Heart"], answer: "Heart" },
+            { q: "Which animal group is characterized by being cold-blooded and having scales?", options: ["Mammals", "Birds", "Reptiles", "Amphibians"], answer: "Reptiles" },
+            { q: "What gas is exhaled as a primary metabolic waste product by animals?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Carbon Monoxide"], answer: "Carbon Dioxide" },
+            { q: "What basic structural component forms the hard outer shell of insects?", options: ["Keratin", "Chitin", "Calcium", "Cartilage"], answer: "Chitin" },
+            { q: "How many chambers exist inside a mammalian heart structural layout?", options: ["2", "3", "4", "1"], answer: "4" },
+            { q: "What animal organ removes metabolic wastes and filters blood?", options: ["Kidney", "Stomach", "Pancreas", "Gallbladder"], answer: "Kidney" },
+            { q: "Which of these animals belongs to the amphibian class?", options: ["Snake", "Frog", "Lizard", "Fish"], answer: "Frog" },
+            // --- Genetics ---
+            { q: "What macromolecule holds the primary genetic code for living things?", options: ["RNA", "DNA", "Protein", "Lipid"], answer: "DNA" },
+            { q: "Who is historically recognized as the founding Father of Genetics?", options: ["Charles Darwin", "Gregor Mendel", "Louis Pasteur", "Alexander Fleming"], answer: "Gregor Mendel" },
+            { q: "How many total chromosomes do normal human somatic cells contain?", options: ["23", "46", "52", "32"], answer: "46" },
+            { q: "An alternative version of a specific gene location is called a/an:", options: ["Allele", "Mutation", "Exon", "Intron"], answer: "Allele" },
+            { q: "What shape describes the structure of a DNA molecule?", options: ["Single Strand", "Double Helix", "Triple Strand", "Circle"], answer: "Double Helix" },
+            { q: "Which RNA base pairs with Adenine instead of Thymine?", options: ["Cytosine", "Guanine", "Uracil", "Adenine"], answer: "Uracil" }
+        ],
+        english: [
+            // --- Grammar ---
+            { q: "Identify the noun in this sentence: 'The fast car drove away.'", options: ["Fast", "Car", "Drove", "Away"], answer: "Car" },
+            { q: "Select the correct verb form: 'She ____ to school every day.'", options: ["walk", "walks", "walking", "walked"], answer: "walks" },
+            { q: "What type of word modifies or describes a verb?", options: ["Adjective", "Noun", "Adverb", "Pronoun"], answer: "Adverb" },
+            { q: "Choose the proper pronoun: 'John is here, and ____ brought a book.'", options: ["she", "he", "it", "they"], answer: "he" },
+            { q: "Which sentence displays the correct use of a past tense verb?", options: ["I see him yesterday.", "I saw him yesterday.", "I seen him yesterday.", "I am seeing him yesterday."], answer: "I saw him yesterday." },
+            { q: "Identify the conjunction in this phrase: 'I wanted to go, but it rained.'", options: ["wanted", "to", "but", "it"], answer: "but" },
+            { q: "What is the plural form of the word 'child'?", options: ["childs", "children", "childrens", "childes"], answer: "children" },
+            // --- Writing Skills ---
+            { q: "What should always be placed at the very end of an interrogative sentence?", options: ["Period", "Comma", "Question Mark", "Exclamation Point"], answer: "Question Mark" },
+            { q: "A short, written summary of an entire research essay is called an:", options: ["Introduction", "Abstract", "Index", "Appendix"], answer: "Abstract" },
+            { q: "Which punctuation mark joins two independent clauses without using a conjunction?", options: ["Comma", "Semicolon", "Colon", "Hyphen"], answer: "Semicolon" },
+            { q: "Where should a thesis statement usually be located inside an academic essay?", options: ["First page summary", "End of Intro paragraph", "Middle body", "Conclusion"], answer: "End of Intro paragraph" },
+            { q: "What is paragraph text formatting indentation usually indicating?", options: ["New chapter", "New speaker or idea", "Important quote", "Page break"], answer: "New speaker or idea" },
+            { q: "What term describes using someone else's written work without citing them?", options: ["Paraphrasing", "Plagiarism", "Quoting", "Editing"], answer: "Plagiarism" },
+            { q: "Which format is used to start a formal professional business letter?", options: ["Hey there,", "Dear Sir/Madam,", "To whomever,", "What's up,"], answer: "Dear Sir/Madam," },
+            // --- Communication Skills ---
+            { q: "Which skill involves maintaining eye contact and nodding to confirm comprehension?", options: ["Passive Listening", "Active Listening", "Public Speaking", "Interrupting"], answer: "Active Listening" },
+            { q: "What form of communication contains body language, gestures, and facial expressions?", options: ["Verbal", "Non-verbal", "Written", "Digital"], answer: "Non-verbal" },
+            { q: "When answering a customer service phone call, your tone of voice should be:", options: ["Aggressive", "Monotone", "Polite and Clear", "Whispering"], answer: "Polite and Clear" },
+            { q: "What term describes the barrier caused by text jargon or language differences?", options: ["Physical barrier", "Semantic barrier", "Psychological barrier", "Mechanical barrier"], answer: "Semantic barrier" },
+            { q: "Providing constructive evaluations back to a speaker is called providing:", options: ["Noise", "Feedback", "Channeling", "Decoding"], answer: "Feedback" },
+            { q: "Which scenario represents an effective presentation skill?", options: ["Reading directly from slides", "Speaking clearly with matching visuals", "Mumbling quickly", "Looking at the floor"], answer: "Speaking clearly with matching visuals" }
+        ]
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const subject = urlParams.get('subject') || 'mathematics';
+    
+    let currentQuestionIndex = 0;
+    let totalCorrectAnswers = 0;
+    let questionsList = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const cleanedSubject = subject.trim().toLowerCase();
+        document.getElementById('subject-title').innerText = `${cleanedSubject.toUpperCase()} Mock Exam`;
+        
+        questionsList = questionBank[cleanedSubject];
+
+        if (questionsList && questionsList.length > 0) {
+            loadQuestion();
+        } else {
+            document.getElementById('question-text').innerText = `No registered questions found for: "${cleanedSubject}"`;
+        }
+    });
+
+    function loadQuestion() {
+        const currentQuestion = questionsList[currentQuestionIndex];
+        document.getElementById('progress-indicator').innerText = `Question ${currentQuestionIndex + 1} of ${questionsList.length}`;
+        document.getElementById('question-text').innerText = currentQuestion.q;
+        
+        let optionsHtml = "";
+        currentQuestion.options.forEach(option => {
+            optionsHtml += `<button class="options-btn" onclick="processAnswerSubmit('${option.replace(/'/g, "\\'")}')">${option}</button>`;
+        });
+        document.getElementById('options-box').innerHTML = optionsHtml;
+    }
+
+    function processAnswerSubmit(selectedOption) {
+        if (selectedOption === questionsList[currentQuestionIndex].answer) {
+            totalCorrectAnswers++;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questionsList.length) {
+            loadQuestion();
+        } else {
+            renderFinalScorecard();
+        }
+    }
+function renderFinalScorecard() {
+
+    const accuracyPercentage = Math.round((totalCorrectAnswers / questionsList.length) * 100);
+
+    // Dashboard Data
+    let tests = parseInt(localStorage.getItem("testsTaken")) || 0;
+    tests++;
+    localStorage.setItem("testsTaken", tests);
+
+    let totalScore = parseInt(localStorage.getItem("totalScore")) || 0;
+    totalScore += accuracyPercentage;
+    localStorage.setItem("totalScore", totalScore);
+
+    let average = Math.round(totalScore / tests);
+    localStorage.setItem("averageScore", average);
+
+   let progress = parseInt(localStorage.getItem("overallProgress")) || 40;
+progress += 10;
+
+if (progress > 100) {
+    progress = 100;
+}
+
+// Increase Videos Completed
+let videos = parseInt(localStorage.getItem("videosCompleted")) || 0;
+videos++;
+localStorage.setItem("videosCompleted", videos);
+
+// Save Progress
+localStorage.setItem("overallProgress", progress);
+
+    document.getElementById('progress-indicator').style.display = 'none';
+
+    document.getElementById('quiz-box').innerHTML = `
+        <div class="score-screen">
+            <h3>🎉 Examination Complete!</h3>
+
+            <div class="score-num">
+                ${totalCorrectAnswers} / ${questionsList.length}
+            </div>
+
+            <p>Accuracy: <strong>${accuracyPercentage}%</strong></p>
+
+            <a href="dashboard.html" class="home-btn">
+                View Dashboard
+            </a>
+
+            <br><br>
+
+            <a href="intermediate.html" class="home-btn">
+                Return to Streams
+            </a>
+
+        </div>
+    `;
+}
+</script>
+</body>
+</html>

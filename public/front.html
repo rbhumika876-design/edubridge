@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EDUBRIDGE - Home</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; line-height: 1.6; background: #f4f4f4; color: #333; }
+    header { background: #001F5C; color: white; padding: 20px; }
+    .header-content { text-align: center; padding: 20px; }
+    .header-content h1 { margin: 0; font-size: 2.5em; }
+    .header-content p { margin: 5px 0 15px; font-size: 1.2em; font-style: italic; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; background: #0A192F; padding: 10px 20px; }
+    .navbar a { color: white; text-decoration: none; font-weight: bold; margin: 0 10px; }
+    .navbar a:hover { color: #FFD700; }
+    .login-btn {
+      display: inline-block; margin-top: 10px; text-decoration: none; color: #1E3A8A;
+      font-weight: bold; border: 2px solid #1E3A8A; padding: 8px 16px; border-radius: 5px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.6s ease; background: white; cursor: pointer;
+    }
+    .login-btn:hover { background: #1E3A8A; color: white; box-shadow: 0 0 15px #FFD700; }
+    section { padding: 40px 20px; }
+    section h2 { text-align: left; margin-bottom: 20px; color: #1E3A8A; }
+    .courses { display: flex; justify-content: center; gap: 100px; flex-wrap: wrap; }
+    .course { background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; width: 320px; text-align: left; }
+    .course h2 { color: #1E3A8A; }
+    .course ul { margin: 10px 0; padding-left: 20px; }
+    .course a {
+      display: inline-block; margin-top: 10px; text-decoration: none; color: #1E3A8A;
+      font-weight: bold; border: 2px solid #1E3A8A; padding: 8px 12px; border-radius: 5px; transition: background 0.3s, color 0.3s;
+    }
+    .course a:hover { background: #1E3A8A; color: white; }
+    .highlight { transition: box-shadow 0.6s ease; }
+    .highlight.active { box-shadow: 0 0 15px #FFD700; }
+    footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 40px; }
+    .user-info { color: #FFD700; font-weight: bold; margin-right: 15px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>EDUBRIDGE</h1>
+      <p>Guiding Students from 10th to Higher Studies</p>
+    </div>
+    <div class="navbar">
+      <div>
+        <a href="front.html">Home</a>
+        <span id="test-nav-link"></span>
+      </div>
+      <div id="auth-zone">
+        <a href="login.html" class="login-btn">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Our Courses</h2>
+    <div class="courses">
+      <div class="course highlight">
+        <h2>after 10th Bridge Course</h2>
+        <h3>Subjects:</h3>
+        <ul>
+          <li>Mathematics Fundamentals</li>
+          <li>Science Basics (Physics, Chemistry, Biology)</li>
+          <li>English & Communication Skills</li>
+        </ul>
+        <h3>Outcome:</h3>
+        <p>Strong foundation for intermediate studies, improved confidence, and readiness for advanced topics.</p>
+        <a href="10th.html">go to course</a>
+      </div>
+      <div class="course highlight">
+        <h2>Intermediate to Higher Studies Bridge Course</h2>
+        <h3>Subjects:</h3>
+        <ul>
+          <li>Advanced Mathematics</li>
+          <li>Engineering Fundamentals</li>
+          <li>Critical Thinking & Problem Solving</li>
+        </ul>
+        <h3>Outcome:</h3>
+        <p>Preparation for engineering and higher education, enhanced analytical skills, and career readiness.</p>
+        <a href="inter.html">go to course</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 EDUBRIDGE. All rights reserved.</p>
+    <p>Contact us: info@edubridge.com</p>
+  </footer>
+
+  <script>
+    // State Tracking logic
+    document.addEventListener("DOMContentLoaded", () => {
+      const email = localStorage.getItem('userEmail');
+      if(email) {
+        document.getElementById('auth-zone').innerHTML = `
+          <span class="user-info">Logged in as: ${email}</span>
+          <button class="login-btn" onclick="logout()">Logout</button>
+        `;
+        document.getElementById('test-nav-link').innerHTML = `
+          <a href="doubt.html" >Doubt session</a>
+          <a href="dashboard.html" style=" margin-left:15px;">Dashboard</a>
+        `;
+      }
+    });
+
+    function logout() {
+      localStorage.clear();
+      window.location.reload();
+    }
+
+    window.addEventListener("scroll", function() {
+      document.querySelectorAll(".highlight").forEach(function(el) {
+        let rect = el.getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

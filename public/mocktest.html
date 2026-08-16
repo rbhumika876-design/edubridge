@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EDUBRIDGE - Academic Mock Evaluation Engine</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; color: #333; }
+    .wrapper { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    h1, h2 { color: #001F5C; }
+    .btn { background: #001F5C; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold; }
+    .btn:hover { background: #0e7c94; }
+    .question-card { margin-bottom: 25px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa; }
+    .option { display: block; margin: 10px 0; cursor: pointer; }
+    .score-record { background: #eef5ff; padding: 10px; margin: 5px 0; border-left: 5px solid #001F5C; border-radius: 3px; }
+    .nav-home { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #0e7c94; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <a href="front.html" class="nav-home">&larr; Return to Home Dashboard</a>
+  <h1 id="engine-title">Dynamic Portal Panel</h1>
+  
+  <div id="dashboard-view">
+    <h2>Your Evaluated Metrics History</h2>
+    <div id="history-container">Loading previous student attempts tracking logs...</div>
+    <hr style="margin: 30px 0;">
+    <h2>Initiate Mock Assessment Profile</h2>
+    <p>Select an exam category context to launch initialization configurations:</p>
+    <button class="btn" onclick="initializeTest('Mathematics')">Math Assessment</button>
+    <button class="btn" onclick="initializeTest('Physics')">Physics Assessment</button>
+    <button class="btn" onclick="initializeTest('Computer Science')">Computer Science Assessment</button>
+  </div>
+
+  <div id="quiz-view" style="display: none;">
+    <h2 id="current-subject-title">Subject Assessment Evaluation</h2>
+    <div id="quiz-questions"></div>
+    <button class="btn" onclick="evaluateAndSubmitQuiz()">Submit Final Analysis Form</button>
+  </div>
+</div>
+
+<script>
+  const userEmail = localStorage.getItem('userEmail');
+  let currentSubject = "";
+  let activeQuestionsArray = [];
+
+  // Question Dataset Bank
+  const datasetBank = {
+    "Mathematics": [
+      { q: "Evaluate the limit as x approaches 0 of sin(x)/x.", o: ["0", "1", "Undefined", "Infinity"], a: 1 },
+      { q: "What is the derivative of e^(3x) with respect to x?", o: ["3e^(3x)", "e^(3x)", "3x", "1/3 e^(3x)"], a: 0 }
+    ],
+    "Physics": [
+      { q: "What is the primary unit of measurement for electrical resistance?", o: ["Ampere", "Volt", "Watt", "Ohm"], a: 3 },
+      { q: "Calculate kinetic energy change parameters under acceleration vector components.", o: ["m*v", "0.5*m*v^2", "m*g*h", "F*d"], a: 1 }
+    ],
+    "Computer Science": [
+      { q: "Which data structure operates on a First-In, First-Out (FIFO) pipeline topology?", o: ["Stack", "Queue", "Binary Tree", "Hash Map"], a: 1 },
+      { q: "What is the time complexity of searching a value inside a balanced Binary Search Tree?", o: ["O(1)", "O(n)", "O(log n)", "O(n log n)"], a: 2 }
+    ]
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!userEmail) {
+      alert("Unauthorized entry pathway detected. Please log in first.");
+      window.location.href = 'login.html';
+      return;
+    }
+    document.getElementById('engine-title').innerText = `Welcome to Mock Testing, ${userEmail}`;
+    fetchMetricsLogs();
+  });
+
+  async function fetchMetricsLogs() {
+    try {
+      const res = await fetch(`/api/scores/${userEmail}`);
+      const logs = await res.json();
+      const container = document.getElementById('history-container');
+      
+      if (logs.length === 0) {
+        container.innerHTML = `<p>No previous evaluation attempts found for this user account.</p>`;
+        return;
+      }
+      
+      container.innerHTML = logs.map(item => `
+        <div class="score-record">
+          <strong>${item.subject}</strong>: Scored ${item.score}/${item.totalQuestions} 
+          <span style="float:right; font-size:0.85em; color:#666;">${new Date(item.timestamp).toLocaleString()}</span>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error("Error fetching historical logs:", err);
+    }
+  }
+
+  function initializeTest(subject) {
+    currentSubject = subject;
+    activeQuestionsArray = datasetBank[subject];
+    
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('quiz-view').style.display = 'block';
+    document.getElementById('current-subject-title').innerText = `${subject} Examination Block`;
+
+    const questContainer = document.getElementById('quiz-questions');
+    questContainer.innerHTML = activeQuestionsArray.map((item, idx) => `
+      <div class="question-card">
+        <p><strong>Question ${idx + 1}:</strong> ${item.q}</p>
+        ${item.o.map((opt, oIdx) => `
+          <label class="option">
+            <input type="radio" name="quest_${idx}" value="${oIdx}"> ${opt}
+          </label>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  async function evaluateAndSubmitQuiz() {
+    let finalScore = 0;
+    
+    activeQuestionsArray.forEach((item, idx) => {
+      const selection = document.querySelector(`input[name="quest_${idx}"]:checked`);
+      if (selection && parseInt(selection.value) === item.a) {
+        finalScore++;
+      }
+    });
+
+    try {
+      const response = await fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userEmail,
+          subject: currentSubject,
+          score: finalScore,
+          totalQuestions: activeQuestionsArray.length
+        })
+      });
+
+      if (response.ok) {
+        alert(`Evaluation Complete. Your score: ${finalScore} / ${activeQuestionsArray.length}. Result saved successfully.`);
+        window.location.reload();
+      } else {
+        alert("Server failed to save score details.");
+      }
+    } catch (err) {
+      alert("Network exception error handling response save routine.");
+    }
+  }
+</script>
+</body>
+</html>
