@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>B.Pharmacy Mock Examination</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; background-color: #f4f7f6; }
+        .quiz-container { max-width: 650px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0,0,0,0.08); }
+        h2 { color: #001F5C; text-transform: uppercase; }
+        .options-btn { width: 100%; padding: 14px; margin: 6px 0; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; text-align: left; transition: 0.2s; }
+        .options-btn:hover { background: #001F5C; color: white; }
+        .score-num { font-size: 48px; color: #008080; font-weight: bold; }
+        .home-btn { display: inline-block; padding: 12px 24px; background: #001F5C; color: white; text-decoration: none; border-radius: 6px; }
+    </style>
+    <script src="progress.js"></script>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="subject-title">Loading...</h2>
+    <div id="progress-indicator"></div>
+    <div id="quiz-box">
+        <h3 id="question-text"></h3>
+        <div id="options-box"></div>
+    </div>
+</div>
+
+<script>
+    const questionBank = {
+        chemistry: [
+            { q: "What is the IUPAC name for Aspirin?", options: ["Salicylic acid", "Acetylsalicylic acid", "Paracetamol", "Benzoic acid"], answer: "Acetylsalicylic acid" },
+            { q: "Which functional group is characteristic of carboxylic acids?", options: ["-OH", "-CHO", "-COOH", "-NH2"], answer: "-COOH" },
+            { q: "What is the hybridization of carbon in methane?", options: ["sp", "sp2", "sp3", "dsp2"], answer: "sp3" },
+            { q: "Which of these is a non-reducing sugar?", options: ["Glucose", "Fructose", "Sucrose", "Lactose"], answer: "Sucrose" },
+            { q: "Which metal is liquid at room temperature?", options: ["Gallium", "Mercury", "Cesium", "Bromine"], answer: "Mercury" },
+            { q: "The process of heating an ore in the absence of air is known as:", options: ["Roasting", "Calcination", "Smelting", "Refining"], answer: "Calcination" },
+            { q: "Which reagent identifies primary amines?", options: ["Carbylamine test", "Fehling's solution", "Tollen's reagent", "Lucas reagent"], answer: "Carbylamine test" },
+            { q: "What is the pH of a neutral solution?", options: ["0", "7", "14", "5"], answer: "7" },
+            { q: "Which vitamin is water soluble?", options: ["Vitamin A", "Vitamin D", "Vitamin C", "Vitamin K"], answer: "Vitamin C" },
+            { q: "What is the molecular formula of Benzene?", options: ["C6H6", "C6H12", "C5H5", "CH4"], answer: "C6H6" }
+        ],
+        pharmacology: [
+            { q: "Which receptor is responsible for Adrenaline effects in the heart?", options: ["Alpha-1", "Beta-1", "Beta-2", "Muscarinic"], answer: "Beta-1" },
+            { q: "What is the study of the effect of the body on the drug?", options: ["Pharmacodynamics", "Pharmacokinetics", "Toxicology", "Pharmacognosy"], answer: "Pharmacokinetics" },
+            { q: "Which is a proton pump inhibitor?", options: ["Ranitidine", "Omeprazole", "Magnesium hydroxide", "Misoprostol"], answer: "Omeprazole" },
+            { q: "Antidote for Paracetamol poisoning?", options: ["Atropine", "N-acetylcysteine", "Flumazenil", "Naloxone"], answer: "N-acetylcysteine" },
+            { q: "What does 'Bioavailability' refer to?", options: ["Excretion rate", "Drug reaching systemic circulation", "Protein binding", "Metabolism speed"], answer: "Drug reaching systemic circulation" },
+            { q: "Which is a bacteriostatic antibiotic?", options: ["Penicillin", "Tetracycline", "Streptomycin", "Ciprofloxacin"], answer: "Tetracycline" },
+            { q: "The time required to reduce drug plasma concentration by half is:", options: ["Half-life", "Onset of action", "Peak time", "Duration"], answer: "Half-life" },
+            { q: "Which drug is used for Hypertension?", options: ["Amlodipine", "Insulin", "Salbutamol", "Morphine"], answer: "Amlodipine" },
+            { q: "Which class of drugs treats depression?", options: ["SSRIs", "NSAIDs", "Antihistamines", "Antacids"], answer: "SSRIs" },
+            { q: "Example of a local anesthetic:", options: ["Lidocaine", "Diazepam", "Ibuprofen", "Digoxin"], answer: "Lidocaine" }
+        ],
+        pharmaceutics: [
+            { q: "Device used for particle size measurement?", options: ["Sieve shaker", "Centrifuge", "Autoclave", "Hot air oven"], answer: "Sieve shaker" },
+            { q: "Purpose of 'glidants' in tablets?", options: ["Bind ingredients", "Improve flow", "Mask taste", "Disintegrate"], answer: "Improve flow" },
+            { q: "Dosage form for rectal administration?", options: ["Suppository", "Syrup", "Tablet", "Capsule"], answer: "Suppository" },
+            { q: "Temperature for Autoclave sterilization?", options: ["100°C", "121°C", "160°C", "180°C"], answer: "121°C" },
+            { q: "Which is a suspending agent?", options: ["Tragacanth", "Lactose", "Starch", "Talc"], answer: "Tragacanth" },
+            { q: "Shelf life is determined by:", options: ["Stability testing", "Clinical trials", "Bioassay", "Toxicity testing"], answer: "Stability testing" },
+            { q: "What is an Emulsion?", options: ["Liquid in liquid", "Solid in solid", "Gas in liquid", "Solid in gas"], answer: "Liquid in liquid" },
+            { q: "Which is an enteric coated tablet?", options: ["Dissolves in stomach", "Dissolves in intestine", "Dissolves in mouth", "Effervescent"], answer: "Dissolves in intestine" },
+            { q: "What is a 'Vehicle' in liquid dosage forms?", options: ["Active drug", "Solvent/Carrier", "Coloring agent", "Flavoring agent"], answer: "Solvent/Carrier" },
+            { q: "Which method is used for tablet manufacturing?", options: ["Granulation", "Distillation", "Sublimation", "Filtration"], answer: "Granulation" }
+        ]
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const subject = params.get('subject') || 'chemistry';
+    let idx = 0, score = 0, list = questionBank[subject];
+
+    function load() {
+        document.getElementById('subject-title').innerText = subject.toUpperCase();
+        document.getElementById('progress-indicator').innerText = `Question ${idx + 1} of ${list.length}`;
+        document.getElementById('question-text').innerText = list[idx].q;
+        let html = "";
+        list[idx].options.forEach(o => html += `<button class="options-btn" onclick="check('${o}')">${o}</button>`);
+        document.getElementById('options-box').innerHTML = html;
+    }
+
+function check(opt) {
+
+    if (opt === list[idx].answer) {
+        score++;
+    }
+
+    idx++;
+
+    if (idx < list.length) {
+        load();
+    } else {
+
+        const accuracyPercentage = Math.round((score / list.length) * 100);
+
+        // Save the completed mock test for the dashboard.
+        if (typeof recordQuizResult === "function") {
+            recordQuizResult(subject, score, list.length);
+        }
+
+        // ---------- Result Screen ----------
+// ---------- Result Screen ----------
+
+document.querySelector(".quiz-container").innerHTML = `
+<div class="score-screen">
+
+    <h2 style="color:#001F5C;">${subject.toUpperCase()}</h2>
+
+    <h3>🎉 Examination Complete!</h3>
+
+    <div class="score-num">
+        ${score} / ${list.length}
+    </div>
+
+    <p style="font-size:24px;">
+        Accuracy: <strong>${accuracyPercentage}%</strong>
+    </p>
+
+    <a href="dashboard.html" class="home-btn" style="margin-top:20px;">
+        View Dashboard
+    </a>
+
+    <a href="bpharm.html" class="home-btn" style="margin-top:20px;">
+        Back to Subjects
+    </a>
+
+</div>
+`;
+    }
+}
+
+    load();
+</script>
+
+</body>
+</html>

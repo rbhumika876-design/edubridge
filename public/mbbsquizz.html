@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUBRIDGE - MBBS Mock Examination</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; background-color: #f4f7f6; margin: 0; }
+        .quiz-container { max-width: 650px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0,0,0,0.08); }
+        h2 { color: #001F5C; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .progress { color: #666; font-size: 14px; margin-bottom: 20px; font-weight: bold; }
+        .question-card h3 { color: #333; margin-bottom: 25px; line-height: 1.4; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .options-btn { width: 100%; padding: 14px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 16px; text-align: left; transition: all 0.2s ease; }
+        .options-btn:hover { background: #001F5C; color: white; border-color: #001F5C; }
+        .score-screen { text-align: center; padding: 20px; }
+        .score-num { font-size: 48px; color: #008080; font-weight: bold; margin: 20px 0; }
+        .home-btn { display: inline-block; padding: 12px 24px; background: #001F5C; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+    </style>
+    <script src="progress.js"></script>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="subject-title">Loading Examination...</h2>
+    <div id="progress-indicator" class="progress">Question 0 of 0</div>
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+
+    <div id="quiz-box">
+        <div class="question-card">
+            <h3 id="question-text">Loading question data...</h3>
+            <div id="options-box" class="options-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionBank = {
+        anatomy: [
+            // --- Human Anatomy ---
+            { q: "Which anatomical landmark separates the superior mediastinum from the inferior mediastinum?", options: ["Sternal angle (Angle of Louis)", "Xiphisternal joint", "Jugular notch", "4th intercostal space"], answer: "Sternal angle (Angle of Louis)" },
+            { q: "Injury to the surgical neck of the humerus most commonly damages which nerve?", options: ["Axillary nerve", "Radial nerve", "Median nerve", "Ulnar nerve"], answer: "Axillary nerve" },
+            { q: "Which muscle initiates the first 15 degrees of abduction of the arm?", options: ["Supraspinatus", "Deltoid", "Infraspinatus", "Subscapularis"], answer: "Supraspinatus" },
+            { q: "Which ligament prevents anterior displacement of the tibia relative to the femur?", options: ["Anterior cruciate ligament", "Posterior cruciate ligament", "Fibular collateral ligament", "Tibial collateral ligament"], answer: "Anterior cruciate ligament" },
+            { q: "Which nerve passes through the carpal tunnel?", options: ["Median nerve", "Ulnar nerve", "Radial nerve", "Musculocutaneous nerve"], answer: "Median nerve" },
+            { q: "Which artery is a direct branch of the celiac trunk?", options: ["Splenic artery", "Right gastric artery", "Gastroduodenal artery", "Cystic artery"], answer: "Splenic artery" },
+            { q: "Which cranial nerve provides parasympathetic innervation to the parotid gland?", options: ["Glossopharyngeal nerve (CN IX)", "Facial nerve (CN VII)", "Vagus nerve (CN X)", "Trigeminal nerve (CN V)"], answer: "Glossopharyngeal nerve (CN IX)" },
+            { q: "The deep inguinal ring is an opening in which layer?", options: ["Transversalis fascia", "External oblique aponeurosis", "Internal oblique muscle", "Scarpa's fascia"], answer: "Transversalis fascia" },
+            { q: "Which line separates internal hemorrhoids from external hemorrhoids?", options: ["Pectinate line", "White line of Hilton", "Anal verge", "Anorectal ring"], answer: "Pectinate line" },
+            { q: "A lesion in the left optic tract results in which visual field defect?", options: ["Right homonymous hemianopia", "Left homonymous hemianopia", "Bitemporal hemianopia", "Binasal hemianopia"], answer: "Right homonymous hemianopia" },
+            { q: "Which nerve is at risk during a thyroidectomy due to its proximity to the inferior thyroid artery?", options: ["Recurrent laryngeal nerve", "Superior laryngeal nerve", "Ansa cervicalis", "Phrenic nerve"], answer: "Recurrent laryngeal nerve" },
+            { q: "The portal vein is formed by the union of the superior mesenteric vein and which other vein?", options: ["Splenic vein", "Inferior mesenteric vein", "Hepatic vein", "Renal vein"], answer: "Splenic vein" },
+            
+            // --- Embryology ---
+            { q: "Tetralogy of Fallot results from the abnormal division of which embryonic structure?", options: ["Truncus arteriosus", "Sinus venosus", "Primitive ventricle", "Atrioventricular canal"], answer: "Truncus arteriosus" },
+            { q: "The nucleus pulposus of the intervertebral disc is a remnant of which structure?", options: ["Notochord", "Neural tube", "Sclerotome", "Dermatome"], answer: "Notochord" },
+            { q: "The epithelial lining of the gastrointestinal tract is derived from which germ layer?", options: ["Endoderm", "Ectoderm", "Mesoderm", "Neural crest"], answer: "Endoderm" },
+            { q: "The thymus gland develops from which pharyngeal pouch?", options: ["Third pouch", "First pouch", "Second pouch", "Fourth pouch"], answer: "Third pouch" },
+            { q: "The definitive adult kidney develops from which structure?", options: ["Metanephros", "Pronephros", "Mesonephros", "Paramesonephric duct"], answer: "Metanephros" },
+            { q: "Failure of the vitelline duct to close completely results in:", options: ["Meckel's diverticulum", "Urachal cyst", "Omphalocele", "Umbilical hernia"], answer: "Meckel's diverticulum" },
+            { q: "Which cells are derived from the neural crest?", options: ["Melanocytes", "Astrocytes", "Oligodendrocytes", "Microglia"], answer: "Melanocytes" },
+            { q: "Congenital diaphragmatic hernia is primarily caused by failure of closure of the:", options: ["Pleuroperitoneal membranes", "Septum transversum", "Dorsal mesentery of esophagus", "Lateral body walls"], answer: "Pleuroperitoneal membranes" },
+            { q: "The paramesonephric (Müllerian) ducts give rise to which adult female structure?", options: ["Uterine tubes", "Ovaries", "Lower vagina", "Labia majora"], answer: "Uterine tubes" },
+            { q: "Which structure produces human chorionic gonadotropin (hCG) during early pregnancy?", options: ["Syncytiotrophoblast", "Cytotrophoblast", "Corpus luteum", "Amnion"], answer: "Syncytiotrophoblast" },
+            
+            // --- Histology ---
+            { q: "What type of epithelium lines the inner surface of blood vessels?", options: ["Simple squamous", "Simple cuboidal", "Stratified squamous", "Pseudostratified columnar"], answer: "Simple squamous" },
+            { q: "Which cells are responsible for the synthesis of organic bone matrix?", options: ["Osteoblasts", "Osteocytes", "Osteoclasts", "Chondrocytes"], answer: "Osteoblasts" },
+            { q: "Intercalated discs are a characteristic histological feature of which tissue?", options: ["Cardiac muscle", "Skeletal muscle", "Smooth muscle", "Dense regular connective tissue"], answer: "Cardiac muscle" },
+            { q: "Which zone in the spleen is primarily responsible for filtering aged red blood cells?", options: ["Red pulp", "White pulp", "Periarterial lymphatic sheath", "Marginal zone"], answer: "Red pulp" },
+            { q: "The myelin sheath in the central nervous system is formed by which cell type?", options: ["Oligodendrocytes", "Schwann cells", "Astrocytes", "Microglia"], answer: "Oligodendrocytes" },
+            { q: "Which layer of the adrenal cortex secretes aldosterone?", options: ["Zona glomerulosa", "Zona fasciculata", "Zona reticularis", "Adrenal medulla"], answer: "Zona glomerulosa" },
+            { q: "The respiratory epithelium lining the trachea is classified as:", options: ["Pseudostratified ciliated columnar", "Simple columnar", "Stratified squamous", "Simple cuboidal"], answer: "Pseudostratified ciliated columnar" },
+            { q: "Which cell type in the stomach secretes hydrochloric acid and intrinsic factor?", options: ["Parietal (oxyntic) cells", "Chief (peptic) cells", "Mucous neck cells", "G cells"], answer: "Parietal (oxyntic) cells" },
+            { q: "Nissl bodies found in neurons histologically represent clusters of:", options: ["Rough endoplasmic reticulum", "Mitochondria", "Golgi apparatus", "Lysosomes"], answer: "Rough endoplasmic reticulum" },
+            { q: "Which skin cell layer undergoes continuous mitosis to replace shed epidermal cells?", options: ["Stratum basale", "Stratum spinosum", "Stratum granulosum", "Stratum corneum"], answer: "Stratum basale" }
+        ],
+        physiology: [
+            // --- Cardiovascular System ---
+            { q: "What event marks the end of the isovolumetric contraction phase in the left ventricle?", options: ["Opening of the aortic valve", "Closure of the mitral valve", "Opening of the mitral valve", "Closure of the aortic valve"], answer: "Opening of the aortic valve" },
+            { q: "According to the Frank-Starling law, an increase in end-diastolic volume leads to an increase in:", options: ["Stroke volume", "Heart rate", "Total peripheral resistance", "Afterload"], answer: "Stroke volume" },
+            { q: "Phase 0 (upstroke) of the cardiac action potential in Purkinje fibers is caused by:", options: ["Inflow of sodium ions", "Inflow of calcium ions", "Outflow of potassium ions", "Outflow of sodium ions"], answer: "Inflow of sodium ions" },
+            { q: "Which baroreceptors send afferent signals via the glossopharyngeal nerve (CN IX)?", options: ["Carotid sinus baroreceptors", "Aortic arch baroreceptors", "Cardiopulmonary receptors", "Kidney juxtaglomerular cells"], answer: "Carotid sinus baroreceptors" },
+            { q: "During which phase of the cardiac cycle is coronary blood flow to the left ventricle highest?", options: ["Early diastole", "Isovolumetric contraction", "Mid-systole", "Late systole"], answer: "Early diastole" },
+            { q: "An increase in arteriole diameter decreases vascular resistance by a factor proportional to which power of the radius?", options: ["Fourth power", "Second power", "Third power", "First power"], answer: "Fourth power" },
+            { q: "The physiological pacemaker of the heart is the:", options: ["Sinoatrial (SA) node", "Atrioventricular (AV) node", "Bundle of His", "Purkinje fibers"], answer: "Sinoatrial (SA) node" },
+            { q: "The first heart sound (S1) is primarily caused by the:", options: ["Closure of AV valves", "Closure of semilunar valves", "Opening of AV valves", "Opening of semilunar valves"], answer: "Closure of AV valves" },
+            { q: "What is the primary effect of parasympathetic stimulation via the vagus nerve on the heart?", options: ["Decreased heart rate", "Increased contractility", "Increased conduction velocity", "Increased heart rate"], answer: "Decreased heart rate" },
+            { q: "Which parameter is calculated by multiplying stroke volume by heart rate?", options: ["Cardiac output", "Mean arterial pressure", "Pulse pressure", "Ejection fraction"], answer: "Cardiac output" },
+            { q: "What ECG wave represents ventricular repolarization?", options: ["T wave", "P wave", "QRS complex", "U wave"], answer: "T wave" },
+
+            // --- Respiratory System ---
+            { q: "What volume remains in the lungs after a maximal forced expiration?", options: ["Residual Volume", "Expiratory Reserve Volume", "Functional Residual Capacity", "Tidal Volume"], answer: "Residual Volume" },
+            { q: "A rightward shift of the oxyhemoglobin dissociation curve is caused by:", options: ["Increased partial pressure of CO2", "Decreased temperature", "Increased blood pH", "Decreased 2,3-BPG"], answer: "Increased partial pressure of CO2" },
+            { q: "Which pulmonary cell type is responsible for the production of surfactant?", options: ["Type II pneumocytes", "Type I pneumocytes", "Alveolar macrophages", "Clara cells"], answer: "Type II pneumocytes" },
+            { q: "Central chemoreceptors in the medulla are primarily stimulated by elevations in:", options: ["Hydrogen ion concentration in brain ECF", "Arterial partial pressure of O2", "Arterial oxygen saturation", "Plasma bicarbonate"], answer: "Hydrogen ion concentration in brain ECF" },
+            { q: "Under resting conditions, what percentage of oxygen is normally extracted by peripheral tissues?", options: ["25%", "50%", "75%", "90%"], answer: "25%" },
+            { q: "Which law states that the total pressure of a gas mixture equals the sum of the partial pressures?", options: ["Dalton's Law", "Henry's Law", "Boyle's Law", "Charles's Law"], answer: "Dalton's Law" },
+            { q: "Functional Residual Capacity (FRC) is equal to the sum of:", options: ["Expiratory Reserve Volume + Residual Volume", "Tidal Volume + Residual Volume", "Inspiratory Reserve Volume + Tidal Volume", "Vital Capacity + Residual Volume"], answer: "Expiratory Reserve Volume + Residual Volume" },
+            { q: "The primary mode of transport for carbon dioxide in the blood is as:", options: ["Bicarbonate ions", "Carbaminohemoglobin", "Dissolved gas", "Carbonic acid"], answer: "Bicarbonate ions" },
+            { q: "What muscle acts as the primary driver for quiet, restful inspiration?", options: ["Diaphragm", "External intercostals", "Internal intercostals", "Rectus abdominis"], answer: "Diaphragm" },
+            { q: "An individual climbing to a high altitude will experience hyperventilation caused by adaptation to:", options: ["Hypoxemia via peripheral chemoreceptors", "Hypercapnia via central chemoreceptors", "Metabolic acidosis", "Increased barometric pressure"], answer: "Hypoxemia via peripheral chemoreceptors" },
+
+            // --- Nervous System ---
+            { q: "The primary inhibitory neurotransmitter in the spinal cord is:", options: ["Glycine", "GABA", "Glutamate", "Acetylcholine"], answer: "Glycine" },
+            { q: "The absolute refractory period of an action potential is primarily due to:", options: ["Inactivation of voltage-gated sodium channels", "Closure of voltage-gated potassium channels", "Hyperpolarization by chloride influx", "The sodium-potassium ATPase pump"], answer: "Inactivation of voltage-gated sodium channels" },
+            { q: "Which spinal tract transmits pain and temperature sensations?", options: ["Lateral spinothalamic tract", "Dorsal column-medial lemniscus", "Ventral spinocerebellar tract", "Corticospinal tract"], answer: "Lateral spinothalamic tract" },
+            { q: "Stimulation of which receptor type triggers a decrease in heart rate at the SA node?", options: ["Muscarinic M2 receptors", "Beta-1 adrenergic receptors", "Alpha-1 adrenergic receptors", "Nicotinic receptors"], answer: "Muscarinic M2 receptors" },
+            { q: "Which hypothalamic nucleus acts as the master circadian pacemaker?", options: ["Suprachiasmatic nucleus", "Arcuate nucleus", "Ventromedial nucleus", "Supraoptic nucleus"], answer: "Suprachiasmatic nucleus" },
+            { q: "Which structure produces cerebrospinal fluid?", options: ["Choroid plexus", "Arachnoid villi", "Ependymal lining", "Subarachnoid space"], answer: "Choroid plexus" },
+            { q: "Fine, coordinated motor movements of the distal upper extremities are controlled by the:", options: ["Lateral corticospinal tract", "Vestibulospinal tract", "Reticulospinal tract", "Tectospinal tract"], answer: "Lateral corticospinal tract" },
+            { q: "What structural area of the brain is primarily responsible for processing language comprehension?", options: ["Wernicke's area", "Broca's area", "Primary motor cortex", "Prefrontal cortex"], answer: "Wernicke's area" },
+            { q: "The receptor type located at the neuromuscular junction of skeletal muscle is:", options: ["Nicotinic Nm", "Nicotinic Nn", "Muscarinic M1", "Muscarinic M3"], answer: "Nicotinic Nm" },
+            { q: "Which neurological structure is heavily damaged in Parkinson's disease, leading to dopamine depletion?", options: ["Substantia nigra", "Caudate nucleus", "Putamen", "Globus pallidus"], answer: "Substantia nigra" }
+        ],
+        biochemistry: [
+            // --- Metabolism ---
+            { q: "What is the primary rate-limiting enzyme governing glycolysis?", options: ["Phosphofructokinase-1 (PFK-1)", "Hexokinase", "Pyruvate kinase", "Glucose-6-phosphatase"], answer: "Phosphofructokinase-1 (PFK-1)" },
+            { q: "How many net ATP molecules are produced from one molecule of glucose during anaerobic glycolysis?", options: ["2 ATP", "4 ATP", "36 ATP", "38 ATP"], answer: "2 ATP" },
+            { q: "Which enzyme handles the rate-limiting step inside the cholesterol biosynthetic pathway?", options: ["HMG-CoA reductase", "HMG-CoA synthase", "Squalene synthase", "Mevalonate kinase"], answer: "HMG-CoA reductase" },
+            { q: "The reactions of the urea cycle take place inside which sub-cellular compartments?", options: ["Mitochondria and cytosol", "Endoplasmic reticulum and Golgi", "Lysosomes and peroxisomes", "Nucleus and cytosol"], answer: "Mitochondria and cytosol" },
+            { q: "Which metabolic intermediate combines with acetyl-CoA to initiate the citric acid cycle?", options: ["Oxaloacetate", "Citrate", "Malate", "Alpha-ketoglutarate"], answer: "Oxaloacetate" },
+            { q: "Classic Galactosemia is caused by a deficiency of which enzyme?", options: ["Galactose-1-phosphate uridyltransferase", "Galactokinase", "UDP-galactose 4-epimerase", "Phosphoglucomutase"], answer: "Galactose-1-phosphate uridyltransferase" },
+            { q: "The primary pathway responsible for generating NADPH required for fatty acid synthesis is the:", options: ["Pentose Phosphate Pathway", "Glycogenolysis", "Gluconeogenesis", "Oxidative phosphorylation"], answer: "Pentose Phosphate Pathway" },
+            { q: "Which apolipoprotein is an essential cofactor required to activate lipoprotein lipase (LPL)?", options: ["Apo C-II", "Apo B-100", "Apo E", "Apo A-I"], answer: "Apo C-II" },
+            { q: "What enzyme catalyzes the final step of gluconeogenesis, skipping the hexokinase step?", options: ["Glucose-6-phosphatase", "Fructose-1,6-bisphosphatase", "Pyruvate carboxylase", "PEP carboxykinase"], answer: "Glucose-6-phosphatase" },
+            { q: "Ketone bodies are synthesized primarily in the liver from which precursor molecule?", options: ["Acetyl-CoA", "Oxaloacetate", "Pyruvate", "Succinyl-CoA"], answer: "Acetyl-CoA" },
+            { q: "What vitamin serves as an essential coenzyme cofactor for transamination reactions?", options: ["Pyridoxine (Vitamin B6)", "Thiamine (Vitamin B1)", "Riboflavin (Vitamin B2)", "Niacin (Vitamin B3)"], answer: "Pyridoxine (Vitamin B6)" },
+
+            // --- Molecular Biology ---
+            { q: "Which DNA polymerase removes RNA primers and fills the resulting gaps on the lagging strand in prokaryotes?", options: ["DNA Polymerase I", "DNA Polymerase III", "DNA Polymerase II", "DNA Ligase"], answer: "DNA Polymerase I" },
+            { q: "What is the direction of transcription processing relative to the synthesized mRNA strand?", options: ["5' to 3' direction", "3' to 5' direction", "Bi-directional", "Variable"], answer: "5' to 3' direction" },
+            { q: "Which component binds directly to the TATA box inside eukaryotic gene promoters?", options: ["TFIID complex", "RNA Polymerase II", "Rho factor", "Sigma factor"], answer: "TFIID complex" },
+            { q: "The base alteration phenomenon allowing a single tRNA anticodon to read multiple codons is called the:", options: ["Wobble Hypothesis", "Frameshift flexibility", "Degenerate translocation", "Transition modification"], answer: "Wobble Hypothesis" },
+            { q: "Which post-transcriptional modification protects eukaryotic mRNA from exonuclease degradation?", options: ["5' 7-methylguanosine capping", "Exon splicing", "Intron retention", "Polyhistidine tagging"], answer: "5' 7-methylguanosine capping" },
+            { q: "What point mutation replaces a purine base structural ring with a pyrimidine base system?", options: ["Transversion mutation", "Transition mutation", "Missense mutation", "Silent mutation"], answer: "Transversion mutation" },
+            { q: "Which enzyme is responsible for synthesizing aminoacyl-tRNA molecules during translation initialization?", options: ["Aminoacyl-tRNA synthetase", "Peptidyl transferase", "RNA polymerase", "Ribozyme"], answer: "Aminoacyl-tRNA synthetase" },
+            { q: "What DNA repair pathway explicitly fixes thymine dimers caused by ultraviolet light exposure?", options: ["Nucleotide excision repair", "Base excision repair", "Mismatch repair", "Homologous recombination"], answer: "Nucleotide excision repair" },
+            { q: "The conversion of RNA into complementary DNA (cDNA) libraries is catalyzed by:", options: ["Reverse transcriptase", "DNA polymerase alpha", "RNA polymerase III", "Endonuclease"], answer: "Reverse transcriptase" },
+            { q: "What sequence found at the 3' end of all mature tRNAs binds directly to incoming amino acids?", options: ["CCA", "AUG", "UAA", "TATA"], answer: "CCA" },
+
+            // --- Enzymology ---
+            { q: "How does a competitive enzyme inhibitor alter the kinetic parameters on a Lineweaver-Burk plot?", options: ["Increases Km without changing Vmax", "Decreases Vmax without changing Km", "Decreases both Km and Vmax", "Increases Vmax and decreases Km"], answer: "Increases Km without changing Vmax" },
+            { q: "The protein-only component of an enzyme system that requires a cofactor for catalytic activity is called an:", options: ["Apoenzyme", "Holoenzyme", "Coenzyme", "Proenzyme"], answer: "Apoenzyme" },
+            { q: "Which regulatory mechanism modulates enzyme activity via the reversible covalent addition of a chemical group?", options: ["Phosphorylation", "Allosteric feedback", "Zymogen cleavage", "Competitive blocking"], answer: "Phosphorylation" },
+            { q: "The Michaelis-Menten constant (Km) represents the substrate concentration at which initial velocity reaches:", options: ["Half of maximal velocity (1/2 Vmax)", "Maximal velocity (Vmax)", "Twice the catalytic output", "Zero tracking point"], answer: "Half of maximal velocity (1/2 Vmax)" },
+            { q: "Which class of enzymes catalyzes the joining of two molecules coupled with ATP hydrolysis?", options: ["Ligases", "Lyases", "Hydrolases", "Isomerases"], answer: "Ligases" },
+            { q: "What metal ion acts as an essential cofactor for the functional operation of hexokinase?", options: ["Magnesium (Mg2+)", "Zinc (Zn2+)", "Iron (Fe2+)", "Copper (Cu2+)"], answer: "Magnesium (Mg2+)" },
+            { q: "An enzyme that is secreted in an inactive form and requires proteolytic cleavage for activation is a:", options: ["Zymogen", "Isoenzyme", "Coenzyme", "Holoenzyme"], answer: "Zymogen" },
+            { q: "How does non-competitive inhibition affect enzyme kinetics parameters?", options: ["Decreases Vmax, Km remains unchanged", "Km increases, Vmax remains unchanged", "Both Km and Vmax increase", "Both Km and Vmax decrease"], answer: "Decreases Vmax, Km remains unchanged" },
+            { q: "Enzymes increase the rate of chemical reactions by lowering which barrier?", options: ["Activation energy", "Free energy of the product", "Free energy of the substrate", "Enthalpy of transition"], answer: "Activation energy" },
+            { q: "Isoenzymes can be distinctively characterized as enzymes that catalyze the same reaction but have different:", options: ["Amino acid sequences and structural properties", "Substrate specificities", "Active site reaction categories", "Final product molecules"], answer: "Amino acid sequences and structural properties" }
+        ]
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const subject = urlParams.get('subject') || 'anatomy';
+    
+    let currentQuestionIndex = 0;
+    let totalCorrectAnswers = 0;
+    let questionsList = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const cleanedSubject = subject.trim().toLowerCase();
+        document.getElementById('subject-title').innerText = `${cleanedSubject.toUpperCase()} Mock Exam`;
+        
+        questionsList = questionBank[cleanedSubject];
+
+        if (questionsList && questionsList.length > 0) {
+            loadQuestion();
+        } else {
+            document.getElementById('question-text').innerText = `No registered questions found for: "${cleanedSubject}"`;
+        }
+    });
+
+    function loadQuestion() {
+        const currentQuestion = questionsList[currentQuestionIndex];
+        document.getElementById('progress-indicator').innerText = `Question ${currentQuestionIndex + 1} of ${questionsList.length}`;
+        document.getElementById('question-text').innerText = currentQuestion.q;
+        
+        let optionsHtml = "";
+        currentQuestion.options.forEach(option => {
+            optionsHtml += `<button class="options-btn" onclick="processAnswerSubmit('${option.replace(/'/g, "\\'")}')">${option}</button>`;
+        });
+        document.getElementById('options-box').innerHTML = optionsHtml;
+    }
+
+    function processAnswerSubmit(selectedOption) {
+        if (selectedOption === questionsList[currentQuestionIndex].answer) {
+            totalCorrectAnswers++;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questionsList.length) {
+            loadQuestion();
+        } else {
+            renderFinalScorecard();
+        }
+    }
+function renderFinalScorecard() {
+
+    const accuracyPercentage = Math.round((totalCorrectAnswers / questionsList.length) * 100);
+
+    // Save the completed mock test for the current logged-in user.
+    if (typeof recordQuizResult === "function") {
+        recordQuizResult(subject, totalCorrectAnswers, questionsList.length);
+    }
+
+    // ---------------- Result Screen ----------------
+
+    document.getElementById('progress-indicator').style.display = 'none';
+
+    document.getElementById('quiz-box').innerHTML = `
+        <div class="score-screen">
+
+            <h3>🎉 Examination Complete!</h3>
+
+            <div class="score-num">
+                ${totalCorrectAnswers} / ${questionsList.length}
+            </div>
+
+            <p>Accuracy: <strong>${accuracyPercentage}%</strong></p>
+
+            <br>
+
+            <a href="dashboard.html" class="home-btn">
+                View Dashboard
+            </a>
+
+            <br><br>
+
+            <a href="mbbs.html" class="home-btn">
+                Return to Streams
+            </a>
+
+        </div>
+    `;
+}
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>EDUBRIDGE - Secure Authentication</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0A192F;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .auth-container {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #001F5C;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #001F5C;
+    }
+
+    .btn {
+      background: #001F5C;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background: #0e7c94;
+    }
+
+    .toggle-msg {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    .toggle-msg span {
+      color: #0e7c94;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #d93025;
+      font-size: 13px;
+      text-align: left;
+      margin-top: -5px;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .password-rules {
+      text-align: left;
+      font-size: 12px;
+      color: #666;
+      margin: 5px 0 12px;
+      display: none;
+    }
+
+    .password-rules div {
+      margin: 4px 0;
+    }
+
+    .valid {
+      color: green;
+    }
+
+    .invalid {
+      color: #d93025;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="auth-container">
+
+  <h2 id="form-title">
+    Login to EDUBRIDGE
+  </h2>
+
+  <form id="auth-form">
+
+    <!-- EMAIL -->
+
+    <input
+      type="email"
+      id="email"
+      placeholder="Email Address"
+      autocomplete="email"
+      required
+    >
+
+    <div id="email-error" class="error"></div>
+
+
+    <!-- PASSWORD -->
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      autocomplete="current-password"
+      required
+    >
+
+    <!-- PASSWORD RULES -->
+
+    <div id="password-rules" class="password-rules">
+
+      <div id="length-rule" class="invalid">
+        ❌ At least 8 characters
+      </div>
+
+      <div id="upper-rule" class="invalid">
+        ❌ At least one uppercase letter
+      </div>
+
+      <div id="lower-rule" class="invalid">
+        ❌ At least one lowercase letter
+      </div>
+
+      <div id="number-rule" class="invalid">
+        ❌ At least one number
+      </div>
+
+      <div id="special-rule" class="invalid">
+        ❌ At least one special character
+      </div>
+
+    </div>
+
+    <div id="password-error" class="error"></div>
+
+
+    <!-- BUTTON -->
+
+    <button
+      type="submit"
+      class="btn"
+      id="submit-btn">
+
+      Login
+
+    </button>
+
+  </form>
+
+
+  <!-- TOGGLE -->
+
+  <p
+    class="toggle-msg"
+    id="toggle-text">
+
+    Don't have an account?
+    <span onclick="toggleMode()">Sign Up</span>
+
+  </p>
+
+</div>
+
+
+<script>
+
+let isLoginMode = true;
+
+
+/* ==========================================
+   TOGGLE LOGIN / SIGNUP
+========================================== */
+
+function toggleMode() {
+
+  isLoginMode = !isLoginMode;
+
+  document.getElementById("form-title").innerText =
+    isLoginMode
+      ? "Login to EDUBRIDGE"
+      : "Create Student Account";
+
+  document.getElementById("submit-btn").innerText =
+    isLoginMode
+      ? "Login"
+      : "Sign Up";
+
+  document.getElementById("toggle-text").innerHTML =
+    isLoginMode
+      ? `Don't have an account?
+         <span onclick="toggleMode()">Sign Up</span>`
+      : `Already have an account?
+         <span onclick="toggleMode()">Login</span>`;
+
+
+  /* Show password rules only during signup */
+
+  document.getElementById("password-rules").style.display =
+    isLoginMode ? "none" : "block";
+
+
+  /* Clear old messages */
+
+  document.getElementById("email-error").style.display = "none";
+
+  document.getElementById("password-error").style.display = "none";
+
+}
+
+
+/* ==========================================
+   EMAIL VALIDATION
+========================================== */
+
+function validateEmail(email) {
+
+  const emailPattern =
+    /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+  return emailPattern.test(email);
+}
+
+
+/* ==========================================
+   PASSWORD VALIDATION
+========================================== */
+
+function validatePassword(password) {
+
+  return {
+
+    length: password.length >= 8,
+
+    upper: /[A-Z]/.test(password),
+
+    lower: /[a-z]/.test(password),
+
+    number: /[0-9]/.test(password),
+
+    special: /[^A-Za-z0-9]/.test(password)
+
+  };
+
+}
+
+
+/* ==========================================
+   UPDATE PASSWORD RULES
+========================================== */
+
+document
+  .getElementById("password")
+  .addEventListener("input", function() {
+
+    if (isLoginMode) {
+      return;
+    }
+
+    const password = this.value;
+
+    const rules = validatePassword(password);
+
+
+    updateRule(
+      "length-rule",
+      rules.length,
+      "At least 8 characters"
+    );
+
+    updateRule(
+      "upper-rule",
+      rules.upper,
+      "At least one uppercase letter"
+    );
+
+    updateRule(
+      "lower-rule",
+      rules.lower,
+      "At least one lowercase letter"
+    );
+
+    updateRule(
+      "number-rule",
+      rules.number,
+      "At least one number"
+    );
+
+    updateRule(
+      "special-rule",
+      rules.special,
+      "At least one special character"
+    );
+
+});
+
+
+/* ==========================================
+   PASSWORD RULE DISPLAY
+========================================== */
+
+function updateRule(id, valid, text) {
+
+  const element =
+    document.getElementById(id);
+
+  if (valid) {
+
+    element.innerHTML =
+      "✅ " + text;
+
+    element.className =
+      "valid";
+
+  } else {
+
+    element.innerHTML =
+      "❌ " + text;
+
+    element.className =
+      "invalid";
+
+  }
+
+}
+
+
+/* ==========================================
+   FORM SUBMISSION
+========================================== */
+
+document
+  .getElementById("auth-form")
+  .addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+
+    const emailError =
+      document.getElementById("email-error");
+
+    const passwordError =
+      document.getElementById("password-error");
+
+
+    /* Clear errors */
+
+    emailError.style.display = "none";
+
+    passwordError.style.display = "none";
+
+
+    /* ======================================
+       CHECK EMAIL
+    ====================================== */
+
+    if (!validateEmail(email)) {
+
+      emailError.innerText =
+        "Please enter a valid email address.";
+
+      emailError.style.display =
+        "block";
+
+      return;
+    }
+
+
+    /* ======================================
+       CHECK PASSWORD DURING SIGNUP
+    ====================================== */
+
+    if (!isLoginMode) {
+
+      const rules =
+        validatePassword(password);
+
+
+      const strongPassword =
+        rules.length &&
+        rules.upper &&
+        rules.lower &&
+        rules.number &&
+        rules.special;
+
+
+      if (!strongPassword) {
+
+        passwordError.innerText =
+          "Password must contain 8+ characters, uppercase, lowercase, number and special character.";
+
+        passwordError.style.display =
+          "block";
+
+        return;
+      }
+
+    }
+
+
+    /* ======================================
+       API ENDPOINT
+    ====================================== */
+
+    const endpoint =
+      isLoginMode
+        ? "/api/login"
+        : "/api/signup";
+
+
+    try {
+
+      const response =
+        await fetch(endpoint, {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+
+        });
+
+
+      const data =
+        await response.json();
+
+
+      /* ======================================
+         SUCCESSFUL LOGIN
+      ====================================== */
+
+      if (response.ok) {
+
+        if (isLoginMode) {
+
+          localStorage.setItem(
+            "authToken",
+            data.token
+          );
+
+          localStorage.setItem(
+            "userEmail",
+            data.email
+          );
+
+
+          localStorage.setItem(
+            "userName",
+            data.name || email.split("@")[0]
+          );
+
+          window.location.href =
+            "front.html";
+
+        }
+
+
+        /* ====================================
+           SUCCESSFUL SIGNUP
+        ==================================== */
+
+        else {
+
+          alert(
+            "Registration successful! Proceeding to log in."
+          );
+
+          toggleMode();
+
+        }
+
+        return;
+      }
+
+
+      /* ======================================
+         EMAIL ALREADY EXISTS
+      ====================================== */
+
+      if (response.status === 409) {
+
+        emailError.innerText =
+          "This email address already exists. Please login instead.";
+
+        emailError.style.display =
+          "block";
+
+        return;
+      }
+
+
+      /* ======================================
+         OTHER SERVER ERROR
+      ====================================== */
+
+      if (data.message) {
+
+        if (
+          data.message
+            .toLowerCase()
+            .includes("email")
+        ) {
+
+          emailError.innerText =
+            data.message;
+
+          emailError.style.display =
+            "block";
+
+        } else {
+
+          passwordError.innerText =
+            data.message;
+
+          passwordError.style.display =
+            "block";
+
+        }
+
+      } else {
+
+        alert(
+          "Authentication failed. Please try again."
+        );
+
+      }
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Network transmission failed. Please try again."
+      );
+
+    }
+
+  });
+
+</script>
+
+</body>
+</html>

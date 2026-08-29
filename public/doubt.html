@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EDUBRIDGE - Doubt Session</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+}
+
+header{
+background:#001F5C;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+#chatBox{
+width:80%;
+height:450px;
+margin:20px auto;
+background:white;
+border-radius:10px;
+padding:15px;
+overflow-y:auto;
+box-shadow:0 0 10px gray;
+}
+
+.user{
+color:blue;
+margin:10px 0;
+}
+
+.bot{
+color:green;
+margin:10px 0;
+}
+
+.input-area{
+display:flex;
+justify-content:center;
+margin-bottom:20px;
+}
+
+input{
+width:70%;
+padding:12px;
+font-size:16px;
+}
+
+button{
+padding:12px 20px;
+background:#001F5C;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:#003399;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>💬 EDUBRIDGE AI Doubt Session</h2>
+</header>
+
+<div id="chatBox"></div>
+
+<div class="input-area">
+<input
+type="text"
+id="question"
+placeholder="Ask your doubt here...">
+
+<button onclick="sendQuestion()">Send</button>
+</div>
+
+<script>
+
+async function sendQuestion(){
+
+let question=document.getElementById("question").value;
+
+if(question=="") return;
+
+let chat=document.getElementById("chatBox");
+
+chat.innerHTML+=`<div class="user"><b>You:</b> ${question}</div>`;
+
+document.getElementById("question").value="";
+
+const response=await fetch("/api/doubt",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+question
+})
+
+});
+
+const data=await response.json();
+
+chat.innerHTML+=`<div class="bot"><b>AI:</b> ${data.answer}</div>`;
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
+</script>
+
+</body>
+</html>
