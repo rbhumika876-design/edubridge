@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUBRIDGE - Polytechnic Mock Examination</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; background-color: #f4f7f6; margin: 0; }
+        .quiz-container { max-width: 650px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0,0,0,0.08); }
+        h2 { color: #001F5C; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .progress { color: #666; font-size: 14px; margin-bottom: 20px; font-weight: bold; }
+        .question-card h3 { color: #333; margin-bottom: 25px; line-height: 1.4; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .options-btn { width: 100%; padding: 14px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 16px; text-align: left; transition: all 0.2s ease; }
+        .options-btn:hover { background: #001F5C; color: white; border-color: #001F5C; }
+        .score-screen { text-align: center; padding: 20px; }
+        .score-num { font-size: 48px; color: #008080; font-weight: bold; margin: 20px 0; }
+        .home-btn { display: inline-block; padding: 12px 24px; background: #001F5C; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+    </style>
+    <script src="progress.js"></script>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="subject-title">Loading Examination...</h2>
+    <div id="progress-indicator" class="progress">Question 0 of 0</div>
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+
+    <div id="quiz-box">
+        <div class="question-card">
+            <h3 id="question-text">Loading question data...</h3>
+            <div id="options-box" class="options-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionBank = {
+        mathematics: [
+            // --- Algebra ---
+            { q: "Solve for x: 3x - 9 = 12", options: ["5", "6", "7", "8"], answer: "7" },
+            { q: "Find the common difference of the AP sequence: 5, 9, 13, 17...", options: ["2", "3", "4", "5"], answer: "4" },
+            { q: "What is the value of x if log3(x) = 4?", options: ["12", "64", "81", "27"], answer: "81" },
+            { q: "What are the roots of the quadratic equation x² - 5x + 6 = 0?", options: ["1, 6", "2, 3", "-2, -3", "5, 6"], answer: "2, 3" },
+            { q: "What is the 5th term of the geometric progression: 2, 6, 18...", options: ["54", "108", "162", "243"], answer: "162" },
+            { q: "The value of the determinant [[4, 2], [1, 3]] is:", options: ["10", "14", "11", "5"], answer: "10" },
+            { q: "If a matrix has 3 rows and 4 columns, its order configuration is denoted as:", options: ["4x3", "3x4", "12", "7"], answer: "3x4" },
+            { q: "If P(A) = 0.3 and P(B) = 0.6 for independent events, find P(A ∩ B):", options: ["0.9", "0.18", "0.45", "0.2"], answer: "0.18" },
+            { q: "Find the sum of the first 10 natural numbers:", options: ["45", "50", "55", "60"], answer: "55" },
+            // --- Trigonometry ---
+            { q: "What is the value of tan(45°)?", options: ["0", "1/2", "1", "√3"], answer: "1" },
+            { q: "Express cot(θ) in terms of standard functions:", options: ["sinθ/cosθ", "cosθ/sinθ", "1/cosθ", "1/sinθ"], answer: "cosθ/sinθ" },
+            { q: "What identity matches cosec²θ - cot²θ?", options: ["0", "1", "-1", "tan²θ"], answer: "1" },
+            { q: "What is the value of cos(90°)?", options: ["0", "1", "-1", "1/2"], answer: "0" },
+            { q: "Convert 180 degrees directly into circular radians:", options: ["π/2", "π", "2π", "3π/2"], answer: "π" },
+            { q: "If sin(θ) = 3/5, what is the value of cos(θ)?", options: ["4/5", "3/4", "1", "2/5"], answer: "4/5" },
+            { q: "Identify the equivalent expression for sin(2θ):", options: ["2sinθ", "sin²θ - cos²θ", "2sinθcosθ", "cos²θ"], answer: "2sinθcosθ" },
+            { q: "What is the value of sec(60°)?", options: ["1", "√2", "2", "2/√3"], answer: "2" },
+            // --- Statistics ---
+            { q: "Find the statistical arithmetic mean of: 5, 10, 15, 20, 25", options: ["10", "12", "15", "20"], answer: "15" },
+            { q: "What is the middle value of an ordered data array called?", options: ["Mean", "Median", "Mode", "Variance"], answer: "Median" },
+            { q: "Find the statistical mode of this group: 2, 3, 3, 4, 5, 5, 5, 6", options: ["3", "4", "5", "6"], answer: "5" },
+            { q: "What is the calculated range of the data set: 14, 2, 38, 19, 7", options: ["31", "36", "38", "12"], answer: "36" },
+            { q: "The square root of standard data variance gives what parameter?", options: ["Mean Deviation", "Standard Deviation", "Range", "Mode"], answer: "Standard Deviation" },
+            { q: "The probability of an impossible event is defined mathematically as:", options: ["-1", "0", "0.5", "1"], answer: "0" },
+            { q: "What is the sum of all individual probabilities in an experiment sample space?", options: ["0", "0.5", "1", "100"], answer: "1" },
+            { q: "The class mark for a grouping interval of 20-40 is:", options: ["10", "20", "30", "40"], answer: "30" }
+        ],
+        physics: [
+            // --- Mechanics ---
+            { q: "What is the fundamental SI unit of mass measurement?", options: ["Gram", "Kilogram", "Pond", "Newton"], answer: "Kilogram" },
+            { q: "What mechanical formula defines linear velocity?", options: ["Displacement / Time", "Distance × Time", "Acceleration / Time", "Mass × Acceleration"], answer: "Displacement / Time" },
+            { q: "Which of Newton's Laws states that every action has an equal and opposite reaction?", options: ["First Law", "Second Law", "Third Law", "Law of Gravitation"], answer: "Third Law" },
+            { q: "What is the product of mass and linear velocity called?", options: ["Force", "Impulse", "Momentum", "Work"], answer: "Momentum" },
+            { q: "What is the unit of work done or energy expended?", options: ["Watt", "Newton", "Joule", "Pascal"], answer: "Joule" },
+            { q: "What path tracking quantity is defined as a vector?", options: ["Speed", "Distance", "Displacement", "Mass"], answer: "Displacement" },
+            { q: "What force acts to oppose relative motion between sliding surface interfaces?", options: ["Gravity", "Friction", "Tension", "Centripetal"], answer: "Friction" },
+            { q: "What is the rate of doing work defined as?", options: ["Energy", "Power", "Force", "Torque"], answer: "Power" },
+            { q: "What is the centripetal acceleration vector direction?", options: ["Tangential", "Away from center", "Towards the center", "Downward"], answer: "Towards the center" },
+            // --- Thermodynamics ---
+            { q: "Which parameter remains constant during an isobaric process?", options: ["Volume", "Temperature", "Pressure", "Entropy"], answer: "Pressure" },
+            { q: "What law states that energy cannot be created or destroyed, only transformed?", options: ["Zeroth Law", "First Law", "Second Law", "Third Law"], answer: "First Law" },
+            { q: "What is the boiling point temperature value of pure water on the Kelvin scale?", options: ["0 K", "100 K", "273 K", "373 K"], answer: "373 K" },
+            { q: "What heat engine mode defines an idealized, reversible cycle with max efficiency?", options: ["Rankine Engine", "Carnot Engine", "Diesel Engine", "Otto Engine"], answer: "Carnot Engine" },
+            { q: "What mode of heat transmission requires no material medium to travel?", options: ["Conduction", "Convection", "Radiation", "Insulation"], answer: "Radiation" },
+            { q: "What is the measure of molecular randomness or disorder in a system called?", options: ["Enthalpy", "Entropy", "Internal Energy", "Temperature"], answer: "Entropy" },
+            { q: "The specific heat capacity of water is approximately:", options: ["1000 J/kg·K", "2100 J/kg·K", "4186 J/kg·K", "300 J/kg·K"], answer: "4186 J/kg·K" },
+            { q: "During a phase change from ice to liquid water, what happens to the temperature?", options: ["Increases", "Decreases", "Stays Constant", "Fluctuates"], answer: "Stays Constant" },
+            // --- Electronics ---
+            { q: "What parameter does an ammeter measure when placed in a circuit line?", options: ["Voltage", "Resistance", "Current", "Capacitance"], answer: "Current" },
+            { q: "What is the core mathematical statement of Ohm's Law?", options: ["V = I / R", "V = I × R", "I = V × R", "R = V × I"], answer: "V = I × R" },
+            { q: "Which circuit component is explicitly designed to store electrical charge?", options: ["Resistor", "Inductor", "Capacitor", "Transformer"], answer: "Capacitor" },
+            { q: "What semiconductor impurity dosing produces an n-type semiconductor crystal?", options: ["Trivalent", "Pentavalent", "Bivalent", "Inert"], answer: "Pentavalent" },
+            { q: "What circuit arrangement converts alternating current (AC) directly to direct current (DC)?", options: ["Amplifier", "Oscillator", "Rectifier", "Attenuator"], answer: "Rectifier" },
+            { q: "What is the unit used to measure electrical capacitance?", options: ["Ohm", "Henry", "Farad", "Tesla"], answer: "Farad" },
+            { q: "What logic gate produces an output of 1 only when both inputs are 1?", options: ["OR Gate", "AND Gate", "NOT Gate", "XOR Gate"], answer: "AND Gate" },
+            { q: "What electrical instrument visualizes waveform voltage oscillations over time?", options: ["Multimeter", "Wattmeter", "Oscilloscope", "Galvanometer"], answer: "Oscilloscope" }
+        ],
+        computer: [
+            // --- Programming Basics ---
+            { q: "Which of the following is considered a high-level programming language?", options: ["Machine Code", "Assembly", "C++", "Binary"], answer: "C++" },
+            { q: "What compiler outcome tracks grammar violations in source code strings?", options: ["Runtime Error", "Syntax Error", "Logical Error", "Null Pointer"], answer: "Syntax Error" },
+            { q: "What code structure repeats an execution block as long as a condition is true?", options: ["If Statement", "Loop", "Function Call", "Switch Case"], answer: "Loop" },
+            { q: "What structural character terminates statements in languages like C, C++, and Java?", options: ["Colon (:)", "Period (.)", "Semicolon (;)", "Comma (,)"], answer: "Semicolon (;)" },
+            { q: "What data type is used to store a single textual letter or symbol?", options: ["int", "float", "char", "boolean"], answer: "char" },
+            { q: "A step-by-step procedural plan written to solve a computational problem is called an:", options: ["Array", "Algorithm", "Compiler", "Variable"], answer: "Algorithm" },
+            { q: "What loop configuration is guaranteed to execute its code block at least once?", options: ["For Loop", "While Loop", "Do-While Loop", "Nested Loop"], answer: "Do-While Loop" },
+            { q: "What does the assignment operator (=) do in programming?", options: ["Compares two values", "Assigns the right value to the left variable", "Multiplies variables", "Terminates execution"], answer: "Assigns the right value to the left variable" },
+            // --- Database Concepts ---
+            { q: "What does the database acronym RDBMS stand for?", options: ["Real Database Management System", "Relational Database Management System", "Regional Data Backup Management", "Recoverable Database System"], answer: "Relational Database Management System" },
+            { q: "What structural table constraint uniquely identifies each record line?", options: ["Foreign Key", "Primary Key", "Unique Index", "Composite Column"], answer: "Primary Key" },
+            { q: "What standard database language query command pulls data from tables?", options: ["GET", "FETCH", "SELECT", "EXTRACT"], answer: "SELECT" },
+            { q: "What database table constraint links two tables together relationally?", options: ["Primary Key", "Foreign Key", "Candidate Key", "Local Pointer"], answer: "Foreign Key" },
+            { q: "What database command adds a completely new data row into a table?", options: ["ADD", "UPDATE", "INSERT INTO", "MAKE"], answer: "INSERT INTO" },
+            { q: "The process of organizing database fields to eliminate duplicate data is:", options: ["Indexing", "Normalization", "Caching", "Sharding"], answer: "Normalization" },
+            { q: "What tracking index structure accelerates data retrieval speeds on large database tables?", options: ["View", "Trigger", "Index", "Sequence"], answer: "Index" },
+            { q: "What standard SQL clause filters rows generated by a SELECT command?", options: ["GROUP BY", "WHERE", "ORDER BY", "HAVING"], answer: "WHERE" },
+            // --- Networking Fundamentals ---
+            { q: "What network topology connects all devices to a single central cable line?", options: ["Star Topology", "Ring Topology", "Bus Topology", "Mesh Topology"], answer: "Bus Topology" },
+            { q: "What layer of the standard 7-layer OSI networking framework handles routing paths?", options: ["Physical Layer", "Data Link Layer", "Network Layer", "Transport Layer"], answer: "Network Layer" },
+            { q: "What internet identity mechanism resolves plain text domain URLs to numerical IP addresses?", options: ["DHCP", "DNS", "FTP", "HTTP"], answer: "DNS" },
+            { q: "What does the computer networking acronym LAN stand for?", options: ["Local Area Network", "Long Access Network", "Logical Array Network", "Lightweight Area Node"], answer: "Local Area Network" },
+            { q: "What network hardware device forwards data packets across distinct networks using IP tracking?", options: ["Hub", "Switch", "Router", "Repeater"], answer: "Router" },
+            { q: "Which transmission protocol is connection-oriented and ensures guaranteed delivery?", options: ["UDP", "IP", "TCP", "ICMP"], answer: "TCP" },
+            { q: "What basic communication address is hard-burned into a network card interface manufacturer side?", options: ["IP Address", "MAC Address", "Port Number", "Subnet Mask"], answer: "MAC Address" },
+            { q: "What secure application protocol safely encrypts standard web traffic data?", options: ["HTTP", "HTTPS", "FTP", "SMTP"], answer: "HTTPS" }
+        ],
+        english: [
+            // --- Grammar ---
+            { q: "Identify the adjective in the phrase: 'The student built an advanced application.'", options: ["Student", "Built", "Advanced", "Application"], answer: "Advanced" },
+            { q: "Fill the blank with the correct verb: 'Neither the teacher nor the students ____ present.'", options: ["was", "were", "is", "am"], answer: "were" },
+            { q: "What is the passive voice form of: 'John wrote the report.'?", options: ["The report is written by John.", "The report was written by John.", "The report had been written by John.", "John was writing the report."], answer: "The report was written by John." },
+            { q: "Choose the proper preposition: 'The presentation is scheduled ____ 10:00 AM.'", options: ["on", "at", "in", "for"], answer: "at" },
+            { q: "Identify the conjunction: 'He studied hard, yet he failed the test.'", options: ["studied", "hard", "yet", "failed"], answer: "yet" },
+            { q: "What is the antonym of the word 'Diligent'?", options: ["Hardworking", "Lazy", "Smart", "Careful"], answer: "Lazy" },
+            { q: "Which option shows correct capitalization structure?", options: ["we live in India.", "We live in india.", "We live in India.", "we live in india."], answer: "We live in India." },
+            { q: "What part of speech replaces a noun to avoid repetitiveness?", options: ["Adverb", "Pronoun", "Preposition", "Interjection"], answer: "Pronoun" },
+            // --- Writing Skills ---
+            { q: "What structural punctuation is used to introduce an itemized list?", options: ["Semicolon (;)", "Colon (:)", "Comma (,)", "Dash (-)"], answer: "Colon (:)" },
+            { q: "A professional summary placed at the start of a technical proposal report is the:", options: ["Appendix", "Index", "Executive Summary", "Glossary"], answer: "Executive Summary" },
+            { q: "When writing a formal business letter, where should the sender's address be positioned?", options: ["At the very top", "At the very bottom", "Inside the signature block", "On the back page"], answer: "At the very top" },
+            { q: "What is the core purpose of a paragraph's topic sentence?", options: ["To conclude the essay", "To introduce the paragraph's main idea", "To list references", "To provide a quote"], answer: "To introduce the paragraph's main idea" },
+            { q: "Which closing signature is best suited for a formal professional business email?", options: ["Cheers,", "Yours faithfully,", "Best regards,", "See ya later,"], answer: "Best regards," },
+            { q: "What does tracking a bibliography page at the end of a report ensure?", options: ["Visual layout appeal", "Proper citation of sources to prevent plagiarism", "Word count checks", "Grammar correction"], answer: "Proper citation of sources to prevent plagiarism" },
+            { q: "What style guideline specifies writing short, clear sentences in technical manuals?", options: ["Poetic Writing", "Technical/Plain Writing", "Narrative Prose", "Fiction Writing"], answer: "Technical/Plain Writing" },
+            // --- Presentation Skills ---
+            { q: "What non-verbal gesture helps build trust with an audience during a presentation?", options: ["Looking at the ceiling", "Maintaining eye contact", "Crossing your arms tightly", "Fidgeting with a pen"], answer: "Maintaining eye contact" },
+            { q: "What action helps ensure an audience can hear your technical presentation clearly?", options: ["Speaking as fast as possible", "Mumbling into the podium", "Speaking at an appropriate volume with clear articulation", "Shouting loudly"], answer: "Speaking at an appropriate volume with clear articulation" },
+            { q: "What design rule applies to professional presentation slide decks?", options: ["Fill every slide completely with walls of text", "Use clean bullet points with plenty of negative space", "Use ten different font styles per slide", "Avoid adding titles"], answer: "Use clean bullet points with plenty of negative space" },
+            { q: "What communication loop step checks if the audience understood your message?", options: ["Encoding", "Transmission", "Feedback/Q&A Session", "Interruption"], answer: "Feedback/Q&A Session" },
+            { q: "What element represents an environmental barrier to effective communication?", options: ["Clear lighting", "Loud background noise", "An open room layout", "A microphone"], answer: "Loud background noise" },
+            { q: "What preparation step helps prevent pacing errors during a final presentation?", options: ["Rehearsing with a timer beforehand", "Improvising the whole talk", "Reading directly from a script", "Skipping practice"], answer: "Rehearsing with a timer beforehand" }
+        ]
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const subject = urlParams.get('subject') || 'mathematics';
+    
+    let currentQuestionIndex = 0;
+    let totalCorrectAnswers = 0;
+    let questionsList = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const cleanedSubject = subject.trim().toLowerCase();
+        document.getElementById('subject-title').innerText = `${cleanedSubject.toUpperCase()} Mock Exam`;
+        
+        questionsList = questionBank[cleanedSubject];
+
+        if (questionsList && questionsList.length > 0) {
+            loadQuestion();
+        } else {
+            document.getElementById('question-text').innerText = `No registered questions found for: "${cleanedSubject}"`;
+        }
+    });
+
+    function loadQuestion() {
+        const currentQuestion = questionsList[currentQuestionIndex];
+        document.getElementById('progress-indicator').innerText = `Question ${currentQuestionIndex + 1} of ${questionsList.length}`;
+        document.getElementById('question-text').innerText = currentQuestion.q;
+        
+        let optionsHtml = "";
+        currentQuestion.options.forEach(option => {
+            optionsHtml += `<button class="options-btn" onclick="processAnswerSubmit('${option.replace(/'/g, "\\'")}')">${option}</button>`;
+        });
+        document.getElementById('options-box').innerHTML = optionsHtml;
+    }
+
+    function processAnswerSubmit(selectedOption) {
+        if (selectedOption === questionsList[currentQuestionIndex].answer) {
+            totalCorrectAnswers++;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questionsList.length) {
+            loadQuestion();
+        } else {
+            renderFinalScorecard();
+        }
+    }
+function renderFinalScorecard() {
+
+    const accuracyPercentage = Math.round((totalCorrectAnswers / questionsList.length) * 100);
+
+    // Save the completed mock test for the current logged-in user.
+    if (typeof recordQuizResult === "function") {
+        recordQuizResult(subject, totalCorrectAnswers, questionsList.length);
+    }
+
+    // ================= Result Screen =================
+
+    document.getElementById('progress-indicator').style.display = 'none';
+
+    document.getElementById('quiz-box').innerHTML = `
+        <div class="score-screen">
+
+            <h3>🎉 Examination Complete!</h3>
+
+            <div class="score-num">
+                ${totalCorrectAnswers} / ${questionsList.length}
+            </div>
+
+            <p>
+                Accuracy: <strong>${accuracyPercentage}%</strong>
+            </p>
+
+            <br>
+
+            <a href="dashboard.html" class="home-btn">
+                View Dashboard
+            </a>
+
+            <br><br>
+
+            <a href="poly.html" class="home-btn">
+                Return to Streams
+            </a>
+
+        </div>
+    `;
+}
+
+    </script>
+
+</body>
+</html>

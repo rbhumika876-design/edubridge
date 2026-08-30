@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EDUBRIDGE - Doubt Session</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+}
+
+header{
+background:#001F5C;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+#chatBox{
+width:80%;
+height:450px;
+margin:20px auto;
+background:white;
+border-radius:10px;
+padding:15px;
+overflow-y:auto;
+box-shadow:0 0 10px gray;
+}
+
+.user{
+color:blue;
+margin:10px 0;
+white-space:pre-wrap;
+}
+
+.bot{
+color:green;
+margin:10px 0;
+white-space:pre-wrap;
+}
+
+.input-area{
+display:flex;
+justify-content:center;
+margin-bottom:20px;
+}
+
+input{
+width:70%;
+padding:12px;
+font-size:16px;
+}
+
+button{
+padding:12px 20px;
+background:#001F5C;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:#003399;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>💬 EDUBRIDGE AI Doubt Session</h2>
+</header>
+
+<div id="chatBox"></div>
+
+<div id="imagePreviewContainer" style="display: none; justify-content: center; align-items: center; margin-bottom: 10px;">
+  <div style="position: relative; display: inline-block;">
+    <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; border: 1px solid #ccc; border-radius: 5px;">
+    <button onclick="removeSelectedImage()" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; padding: 0; line-height: 20px; text-align: center;">✕</button>
+  </div>
+</div>
+
+<div class="input-area">
+<input
+type="text"
+id="question"
+placeholder="Ask your doubt here..."
+onkeydown="if(event.key === 'Enter') sendQuestion()">
+
+<input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+<button id="uploadBtn" onclick="document.getElementById('imageInput').click()" style="background: #e0e0e0; color: black; margin-right: 5px; font-size: 16px;">📷</button>
+<button id="micBtn" onclick="toggleSpeech()" style="background: #e0e0e0; color: black; margin-right: 5px; font-size: 16px;">🎤</button>
+<button onclick="sendQuestion()">Send</button>
+</div>
+
+<script>
+let selectedImageData = null;
+let selectedImageMimeType = null;
+
+function handleImageSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  selectedImageMimeType = file.type;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    selectedImageData = e.target.result;
+    const imgPreview = document.getElementById("imagePreview");
+    imgPreview.src = selectedImageData;
+    document.getElementById("imagePreviewContainer").style.display = "flex";
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeSelectedImage() {
+  selectedImageData = null;
+  selectedImageMimeType = null;
+  document.getElementById("imageInput").value = "";
+  document.getElementById("imagePreviewContainer").style.display = "none";
+  document.getElementById("imagePreview").src = "";
+}
+
+let recognition;
+let isListening = false;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+
+  recognition.onstart = () => {
+    isListening = true;
+    const micBtn = document.getElementById("micBtn");
+    micBtn.innerHTML = "🔴 Listening...";
+    micBtn.style.background = "#d32f2f";
+    micBtn.style.color = "white";
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    const micBtn = document.getElementById("micBtn");
+    micBtn.innerHTML = "🎤";
+    micBtn.style.background = "#e0e0e0";
+    micBtn.style.color = "black";
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("question").value = transcript;
+    document.getElementById("question").focus();
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+    alert("Voice recognition error: " + event.error + "\n\n(Tip: 'not-allowed' means microphone access is blocked. 'no-speech' means no sound was heard.)");
+    isListening = false;
+    const micBtn = document.getElementById("micBtn");
+    micBtn.innerHTML = "🎤";
+    micBtn.style.background = "#e0e0e0";
+    micBtn.style.color = "black";
+  };
+}
+
+function toggleSpeech() {
+  if (!recognition) {
+    alert("Speech recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+    return;
+  }
+  if (isListening) {
+    recognition.stop();
+  } else {
+    recognition.start();
+  }
+}
+
+async function sendQuestion(){
+
+let question=document.getElementById("question").value;
+
+if(question=="" && !selectedImageData) return;
+
+let chat=document.getElementById("chatBox");
+
+let userMsg = `<div class="user"><b>You:</b> ${question}`;
+if (selectedImageData) {
+  userMsg += `<br><img src="${selectedImageData}" style="max-width: 200px; max-height: 200px; border-radius: 5px; margin-top: 5px; display: block;">`;
+}
+userMsg += `</div>`;
+
+chat.innerHTML+= userMsg;
+
+const questionToSend = question;
+const imageToSend = selectedImageData ? { data: selectedImageData, mimeType: selectedImageMimeType } : null;
+
+document.getElementById("question").value="";
+removeSelectedImage();
+chat.scrollTop=chat.scrollHeight;
+
+const response=await fetch("/api/doubt",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+question: questionToSend,
+image: imageToSend
+})
+
+});
+
+const data=await response.json();
+
+chat.innerHTML+=`<div class="bot"><b>AI:</b> ${data.answer}</div>`;
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
+</script>
+
+</body>
+</html>

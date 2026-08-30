@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intermediate Subjects - EDU-BRIDGE</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f8faff;
+    color: #10285f;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ================= HEADER ================= */
+
+header {
+    height: 110px;
+    background: linear-gradient(135deg, #061d55, #082b70);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4%;
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    font-size: 48px;
+}
+
+.logo h1 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.logo h1 span {
+    color: #ffd21c;
+}
+
+.logo p {
+    font-size: 14px;
+    color: #e6ecff;
+}
+
+nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 25px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+nav a:hover,
+nav a.active {
+    background: rgba(255,255,255,0.1);
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #1877f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+}
+
+.user-text {
+    font-size: 13px;
+}
+
+.user-text strong {
+    display: block;
+    color: white;
+}
+
+.user-text span {
+    color: #ffd21c;
+    font-weight: bold;
+}
+
+.logout {
+    border: 1px solid white;
+    border-radius: 25px;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+}
+
+/* ================= BACKGROUND DECORATIONS ================= */
+
+.background-shape {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.shape-left {
+    width: 330px;
+    height: 330px;
+    top: 110px;
+    left: -100px;
+    background: #e2edff;
+    border-radius: 0 0 55% 0;
+}
+
+.shape-right {
+    width: 380px;
+    height: 350px;
+    right: -100px;
+    bottom: -80px;
+    background: #f0e6ff;
+    border-radius: 60% 0 0 0;
+}
+
+/* Dots */
+
+.dots {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    z-index: 0;
+    opacity: 0.7;
+
+    background-image: radial-gradient(#c9dcff 3px, transparent 3px);
+    background-size: 24px 24px;
+}
+
+.dots-left {
+    left: 20px;
+    top: 180px;
+}
+
+.dots-right {
+    right: 25px;
+    top: 145px;
+}
+
+/* ================= MAIN ================= */
+
+main {
+    position: relative;
+    z-index: 2;
+    padding: 35px 4% 70px;
+}
+
+.page-heading {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.heading-icon {
+    font-size: 35px;
+    color: #f5c400;
+    margin-bottom: 8px;
+}
+
+.page-heading h2 {
+    font-size: 38px;
+    color: #082b70;
+    margin-bottom: 10px;
+}
+
+.heading-line {
+    width: 80px;
+    height: 3px;
+    background: #1769e0;
+    margin: auto;
+    border-radius: 10px;
+}
+
+/* ================= SUBJECT GRID ================= */
+
+.subject-container {
+    max-width: 1350px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+/* ================= SUBJECT CARD ================= */
+
+.subject-box {
+    background: rgba(255,255,255,0.94);
+    border-radius: 15px;
+    padding: 25px 22px;
+    box-shadow: 0 8px 25px rgba(25, 61, 120, 0.10);
+    border: 1px solid #e5eaf5;
+    transition: 0.3s ease;
+}
+
+.subject-box:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(25, 61, 120, 0.16);
+}
+
+/* Subject title */
+
+.subject-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.subject-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    background: #e9f2ff;
+}
+
+.subject-box h2 {
+    color: #082b70;
+    font-size: 24px;
+}
+
+/* Course Details button */
+
+.course-btn {
+    width: 100%;
+    border: none;
+    padding: 10px;
+    background: #082b70;
+    color: white;
+    border-radius: 7px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 22px;
+}
+
+.course-btn:hover {
+    background: #1046a0;
+}
+
+/* Content */
+
+.subject-box h3 {
+    color: #10285f;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
+.subject-box ul {
+    padding-left: 20px;
+    margin-bottom: 22px;
+}
+
+.subject-box li {
+    margin: 7px 0;
+    font-size: 14px;
+    color: #34476b;
+}
+
+.subject-box li::marker {
+    color: #1769e0;
+}
+
+/* Divider */
+
+.divider {
+    height: 1px;
+    background: #e3e8f2;
+    margin: 18px 0;
+}
+
+/* Mock test */
+
+.mock-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #082b70;
+    margin-bottom: 12px;
+}
+
+.mock-btn {
+    padding: 8px 18px;
+    border: 1px solid #9eb7e8;
+    color: #082b70;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.mock-btn:hover {
+    background: #edf4ff;
+}
+
+/* ================= COLORS ================= */
+
+.math .subject-icon {
+    background: #e2f0ff;
+}
+
+.physics .subject-icon {
+    background: #e8f0ff;
+}
+
+.chemistry .subject-icon {
+    background: #f0e7ff;
+}
+
+.biology .subject-icon {
+    background: #e4f7ed;
+}
+
+.english .subject-icon {
+    background: #ffe8f1;
+}
+
+/* English centered on second row */
+
+.english {
+    grid-column: 2 / 4;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    position: relative;
+    z-index: 2;
+    background: #071d50;
+    color: white;
+    text-align: center;
+    padding: 22px;
+    font-size: 14px;
+}
+
+footer p {
+    margin: 5px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1100px) {
+
+    header {
+        height: auto;
+        padding: 18px 4%;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-area {
+        margin-left: auto;
+    }
+
+    .subject-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .english {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 650px) {
+
+    header {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .logo {
+        justify-content: center;
+    }
+
+    .logo h1 {
+        font-size: 22px;
+    }
+
+    .logo p {
+        font-size: 11px;
+    }
+
+    .user-area {
+        display: none;
+    }
+
+    nav {
+        gap: 5px;
+    }
+
+    nav a {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .page-heading h2 {
+        font-size: 30px;
+    }
+
+    .subject-container {
+        grid-template-columns: 1fr;
+    }
+
+    .english {
+        grid-column: auto;
+    }
+
+    .shape-left {
+        width: 220px;
+        height: 220px;
+    }
+
+    .shape-right {
+        width: 250px;
+        height: 250px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background decorations -->
+<div class="background-shape shape-left"></div>
+<div class="background-shape shape-right"></div>
+<div class="dots dots-left"></div>
+<div class="dots dots-right"></div>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="logo">
+        <div class="logo-icon">📖</div>
+
+        <div>
+            <h1>EDU-<span>BRIDGE</span></h1>
+            <p>Guiding Students from 10th to Higher Studies</p>
+        </div>
+    </div>
+
+
+    <nav>
+        <a href="front.html">⌂ Home</a>
+        <a href="#">💬 Doubt Session</a>
+        <a href="#">▦ Dashboard</a>
+    </nav>
+
+
+    <div class="user-area">
+
+        <div class="user-icon">👤</div>
+
+        <div class="user-text">
+            Logged in as:
+            <span id="user-email">Student</span>
+        </div>
+
+        <a href="login.html" class="logout">⇥ Logout</a>
+
+    </div>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+    <div class="page-heading">
+
+        <div class="heading-icon">🎓</div>
+
+        <h2>Intermediate Subjects</h2>
+
+        <div class="heading-line"></div>
+
+    </div>
+
+
+    <div class="subject-container">
+
+
+        <!-- MATHEMATICS -->
+
+        <div class="subject-box math">
+
+            <div class="subject-title">
+                <div class="subject-icon">➗</div>
+                <h2>Mathematics</h2>
+            </div>
+
+            <button class="course-btn"
+                    onclick="showDetails('math')">
+                Course Details
+            </button>
+
+            <div id="math">
+
+                <h3>🎥 Lecture Videos</h3>
+
+                <ul>
+                    <li>
+                        <a href="https://youtu.be/grnP3mduZkM" target="_blank" rel="noopener noreferrer">
+                            Algebra Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Trigonometry%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Trigonometry Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Statistics%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Statistics Lecture
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="divider"></div>
+
+                <div class="mock-title">
+                    📝 Mock Test (20 Questions)
+                </div>
+
+                <button class="mock-btn" onclick="window.location.href='quiz.html?subject=mathematics'">
+                    Mock Test
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PHYSICS -->
+
+        <div class="subject-box physics">
+
+            <div class="subject-title">
+                <div class="subject-icon">⚛️</div>
+                <h2>Physics</h2>
+            </div>
+
+            <button class="course-btn"
+                    onclick="showDetails('physics')">
+                Course Details
+            </button>
+
+            <div id="physics">
+
+                <h3>🎥 Lecture Videos</h3>
+
+                <ul>
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Mechanics%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Mechanics Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Thermodynamics%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Thermodynamics Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Electronics%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Electronics Lecture
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="divider"></div>
+
+                <div class="mock-title">
+                    📝 Mock Test (20 Questions)
+                </div>
+
+                <button class="mock-btn" onclick="window.location.href='quiz.html?subject=physics'">
+                    Mock Test
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- CHEMISTRY -->
+
+        <div class="subject-box chemistry">
+
+            <div class="subject-title">
+                <div class="subject-icon">🧪</div>
+                <h2>Chemistry</h2>
+            </div>
+
+            <button class="course-btn"
+                    onclick="showDetails('chemistry')">
+                Course Details
+            </button>
+
+            <div id="chemistry">
+
+                <h3>🎥 Lecture Videos</h3>
+
+                <ul>
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Organic%20Chemistry%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Organic Chemistry Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Inorganic%20Chemistry%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Inorganic Chemistry Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Physical%20Chemistry%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Physical Chemistry Lecture
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="divider"></div>
+
+                <div class="mock-title">
+                    📝 Mock Test (20 Questions)
+                </div>
+
+                <button class="mock-btn" onclick="window.location.href='quiz.html?subject=chemistry'">
+                    Mock Test
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- BIOLOGY -->
+
+        <div class="subject-box biology">
+
+            <div class="subject-title">
+                <div class="subject-icon">🌿</div>
+                <h2>Biology</h2>
+            </div>
+
+            <button class="course-btn"
+                    onclick="showDetails('biology')">
+                Course Details
+            </button>
+
+            <div id="biology">
+
+                <h3>🎥 Lecture Videos</h3>
+
+                <ul>
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Botany%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Botany Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Zoology%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Zoology Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Genetics%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Genetics Lecture
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="divider"></div>
+
+                <div class="mock-title">
+                    📝 Mock Test (20 Questions)
+                </div>
+
+                <button class="mock-btn" onclick="window.location.href='quiz.html?subject=biology'">
+                    Mock Test
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ENGLISH -->
+
+        <div class="subject-box english">
+
+            <div class="subject-title">
+                <div class="subject-icon">💬</div>
+                <h2>English</h2>
+            </div>
+
+            <button class="course-btn"
+                    onclick="showDetails('english')">
+                Course Details
+            </button>
+
+            <div id="english">
+
+                <h3>🎥 Lecture Videos</h3>
+
+                <ul>
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Grammar%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Grammar Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Writing%20Skills%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Writing Skills Lecture
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://www.youtube.com/results?search_query=Communication%20Skills%20Lecture%20Intermediate" target="_blank" rel="noopener noreferrer">
+                            Communication Skills Lecture
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="divider"></div>
+
+                <div class="mock-title">
+                    📝 Mock Test (20 Questions)
+                </div>
+
+                <button class="mock-btn" onclick="window.location.href='quiz.html?subject=english'">
+                    Mock Test
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <p>© 2026 EDU-BRIDGE. All rights reserved.</p>
+
+    <p>
+        Contact us: info@edubridge.com
+    </p>
+
+</footer>
+
+
+<script>
+
+function showDetails(id) {
+
+    const section = document.getElementById(id);
+
+    if (section.style.display === "none") {
+        section.style.display = "block";
+    } else {
+        section.style.display = "block";
+    }
+
+}
+
+
+// Show logged-in email if available
+
+const email = localStorage.getItem("userEmail");
+
+if (email) {
+    document.getElementById("user-email").textContent = email;
+}
+
+</script>
+
+<script src="progress.js"></script>
+</body>
+</html>
+  
